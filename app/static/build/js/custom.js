@@ -2180,6 +2180,74 @@ function init_IonRangeSlider() {
 /* DATERANGEPICKER */
 var date_label;
 
+function init_audiance_timerange_right() {
+    if (typeof($.fn.daterangepicker) === 'undefined') {
+        return;
+    }
+    console.log('init_audiance_timerange_right');
+
+    var cb = function(start, end, label) {
+        console.log(start.toISOString(), end.toISOString(), label);
+        $('#audiance_timerange_right span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+
+    };
+    var optionSet1 = {
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        minDate: '01/01/2012',
+        maxDate: '12/31/2015',
+        dateLimit: {
+            days: 60
+        },
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: false,
+        timePickerIncrement: 1,
+        timePicker12Hour: false,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'left',
+        buttonClasses: ['btn btn-default'],
+        applyClass: 'btn-small btn-primary',
+        cancelClass: 'btn-small',
+        format: 'MM/DD/YYYY',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Submit',
+            cancelLabel: 'Clear',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    };
+
+    $('#audiance_timerange_right span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+    $('#audiance_timerange_right').daterangepicker(optionSet1, cb);
+    $('#audiance_timerange_right').on('show.daterangepicker', function() {
+        console.log("show event fired");
+    });
+    $('#audiance_timerange_right').on('hide.daterangepicker', function() {
+        console.log("hide event fired");
+    });
+    $('#audiance_timerange_right').on('apply.daterangepicker', function(ev, picker) {
+        console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+    });
+    $('#audiance_timerange_right').on('cancel.daterangepicker', function(ev, picker) {
+        console.log("cancel event fired");
+    });
+
+
+}
+
 function init_daterangepicker() {
 
     if (typeof($.fn.daterangepicker) === 'undefined') {
@@ -2380,6 +2448,8 @@ function init_daterangepicker_right() {
     cb(moment().subtract(6, 'days'), moment());
 
 }
+
+
 
 function init_daterangepicker_single_call() {
 
@@ -5871,6 +5941,9 @@ $(document).ready(function() {
     init_CustomNotification();
     init_autosize();
     init_autocomplete();
+    // new implementation
+
+    init_audiance_timerange_right();
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
     // var ctxL = document.getElementById("lineChart").getContext('2d');
