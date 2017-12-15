@@ -436,7 +436,7 @@ function plot_fsa_user_chart(array_range_date) {
         x_val2 = [];
 
 
-    if (location.pathname.match("index.html") && Array.isArray(array_range_date[0])) {
+    if (((location.pathname.match("index.html")) || location.pathname == "/") && Array.isArray(array_range_date[0])) {
 
         m_start = moment(array_range_date[0][0], 'YYYY-MM-DD');
         m_end = moment(array_range_date[0][1], 'YYYY-MM-DD');
@@ -5901,7 +5901,14 @@ function init_echarts() {
 
 }
 
+function init_new_test() {
+    $(".dropdown-menu li a").click(function() {
 
+        // $(".btn:first-child").html($(this).text() + ' <span class="caret"></span>');
+        $(".btn-group.open>.btn:first-child").html($(this).text() + ' <span class="caret"></span>');
+
+    });
+}
 $(document).ready(function() {
 
     init_sparklines();
@@ -5944,6 +5951,7 @@ $(document).ready(function() {
     // new implementation
 
     init_audiance_timerange_right();
+    init_new_test();
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
     // var ctxL = document.getElementById("lineChart").getContext('2d');

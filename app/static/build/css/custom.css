@@ -5213,9 +5213,51 @@ line-chart .inside .inline {
     border-bottom: 1px solid blue;
     /*line-height: 48px;*/
 }
+.force-pull-right {
+  float: right !important;
+}
+.m-container-right_col{
+    padding: 10px !important
+}
+.tab-border-bottom {
+    border-bottom: 1px solid #ccc;
+    clear: both;
+    margin-top: 3px;
+}
 
 
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row.display-flex > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+.audiance_ov_table {
+    float: left;
+    width: 30%;
+}
+.audiance_ov_explore {
+    float: left;
+    width: 30%;
+}
 
+
+._GAfe {
+    border-collapse: collapse;
+    font-size: 98%;
+    width: 100%;
+}
+
+._GAfe th {
+    border-bottom: 1px solid #666;
+    padding: 12px 6px 3px;
+    text-align: left;
+}
+._GAhT {
+    margin-left: 20px;
+}
 /*.c3-xgrid-line line {
     stroke: blue;
 }
