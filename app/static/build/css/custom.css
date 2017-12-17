@@ -5240,7 +5240,8 @@ line-chart .inside .inline {
 }
 .audiance_ov_explore {
     float: left;
-    width: 30%;
+    padding-left: 15px;
+    width: 68%;
 }
 
 
@@ -5254,11 +5255,67 @@ line-chart .inside .inline {
     border-bottom: 1px solid #666;
     padding: 12px 6px 3px;
     text-align: left;
+    font-weight: bold;
+    color:#130D37;
 }
 ._GAhT {
     margin-left: 20px;
 }
+
+
+._GAfe td {
+    padding: 12px 6px 3px;
+    text-align: left;
+    color: #596DE6;
+}
+._GAfe td:hover{
+    text-decoration: underline;
+}
+
+._GAfb {
+    border-collapse: collapse;
+    font-size: 98%;
+    width: 100%;
+}
+
+._GAfb tr {
+    border-bottom: 1px solid #666;
+    
+    /*text-align: left;
+    font-weight: bold;
+    color:#130D37;*/
+}
+
+._GAfb th {
+    /*border-bottom: 1px solid #666;*/
+    padding: 12px 10px 3px;
+    text-align: left;
+    font-weight: bold;
+    color:#130D37;
+}
+
+._GAfb tr:nth-child(even){
+background-color: #f8f8f8;
+
+}
+._GAfb th:nth-child(1) {
+
+    /*border-bottom: 1px solid #666;*/
+    width: 60%
+}
+
+._GAfb th:nth-child(2){
+
+    /*border-bottom: 1px solid #666;*/
+    width: 15%
+}
 /*.c3-xgrid-line line {
+
+    ._GAfb th:nth-child(1),td:nth-child(1) {
+
+    border-bottom: 1px solid #666;
+    width: 10%
+}
     stroke: blue;
 }
 .c3-xgrid-line.grid4 line {

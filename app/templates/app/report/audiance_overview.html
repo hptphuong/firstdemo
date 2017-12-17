@@ -111,13 +111,49 @@
                                 </div>
                                 <div class="tab-border-bottom"></div>
                             </div>
-                            <!-- count -->
+                            <!-- end count -->
                             <div class="row m-container-right_col">
                                 <div class="audiance_ov_table">
-                                    
+                                    <table id="audiance_ov_cat_table" class="_GAfe ">
+                                        <tr>
+                                            <th>Demographics</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Language</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Country</td>
+                                        </tr>
+                                        <tr>
+                                            <td>City</td>
+                                        </tr>
+                                        <tr>
+                                            <th>System</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Browser</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Operating System</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Service Provider</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Mobile</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Operating System</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Service Provider</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Screen Resolution</td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <div class="audiance_ov_explore">
-                                    
+                                <div id="audiance_ov_tbl_data" class="audiance_ov_explore">
                                 </div>
                             </div>
                         </div>
@@ -134,7 +170,9 @@
 <a href="" ng-click="sort('-votes')" class="btn btn-default" ng-class="{'active':sortBy == '-votes'}">Most Liked</a>
 <a href="" ng-click="sort('-views')" class="btn btn-default" ng-class="{'active':sortBy == '-views'}">Most Viewed</a>
 </div> -->
-{% endblock content %} {% block javascripts %} {{ block.super }}
+{% endblock content %} 
+{% block javascripts %} 
+{{ block.super }}
 <!-- Chart.js -->
 <script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
 {% endblock javascripts %}

@@ -5901,19 +5901,91 @@ function init_echarts() {
 
 }
 
-function init_new_test() {
+function audiance_overivew_explore_table(table_header, table_data) {
+    tableare = document.getElementById("audiance_ov_tbl_data");
+
+    while (tableare.firstChild) {
+        tableare.removeChild(tableare.firstChild);
+    }
+    var table = document.createElement("table");
+    table.setAttribute("class", "_GAfb");
+    var tr = document.createElement("tr");
+    // create table for language
+    var header_row = tr.cloneNode();
+
+
+    for (i = 0; i < table_header.length; i++) {
+        // console.log(table_header['Language'][i]);
+        th = document.createElement("th");
+        th.innerHTML = table_header[i];
+        tr.appendChild(th);
+    }
+    table.appendChild(tr);
+    // insert data
+
+    for (rowid = 0; rowid < table_data.length; rowid++) {
+        tr = document.createElement("tr");
+        for (j = 0; j < table_data[rowid].length; j++) {
+            if (j == 0) {
+                cellhtml = "&ensp;" + (rowid + 1) + ".&ensp;" + table_data[rowid][j];
+            } else cellhtml = "&emsp;" + table_data[rowid][j]
+            tr.insertCell(j).innerHTML = cellhtml;
+
+        }
+        table.appendChild(tr);
+    }
+
+    tableare.appendChild(table);
+}
+
+function addRowHandlers() {
+    var table = document.getElementById("audiance_ov_cat_table");
+    var rows = table.getElementsByTagName("tr");
+    table_header_list = {
+        'Language': ['Language', 'Users', '%Users'],
+        'Country': ['Country', 'Users', '%Users']
+    };
+    table_data_sample = [
+        ['en-us', 16707, 0.5564],
+        ['en-gb', 2086, 0.0695],
+        ['pt-br', 1271, 0.0423]
+    ];
+    for (i = 1; i < rows.length; i++) { // skip header
+        var currentRow = table.rows[i];
+
+        var createClickHandler =
+            function(row) {
+                return function() {
+                    var cell = row.getElementsByTagName("td")[0];
+                    table_header = table_header_list[cell.textContent];
+                    table_data = table_data_sample;
+                    audiance_overivew_explore_table(table_header, table_data);
+                };
+            };
+
+        currentRow.onclick = createClickHandler(currentRow);
+    }
+}
+
+function init_new_test_audiance_overivew() {
+    if (!document.location.pathname.match("audiance_overview.html")) return;
     $(".dropdown-menu li a").click(function() {
 
         // $(".btn:first-child").html($(this).text() + ' <span class="caret"></span>');
         $(".btn-group.open>.btn:first-child").html($(this).text() + ' <span class="caret"></span>');
 
     });
+
+
+
+    // audiance_overivew_explore_table(table_header_list['Language'], table_data);
+    addRowHandlers();
 }
 $(document).ready(function() {
 
     init_sparklines();
-    // init_fsa_user_chart();
-    // init_fsa_user_chart();
+    init_fsa_user_chart();
+    init_fsa_user_chart();
 
     init_flot_chart();
     init_sidebar();
@@ -5925,7 +5997,7 @@ $(document).ready(function() {
     init_IonRangeSlider();
     init_ColorPicker();
     init_TagsInput();
-    init_parsley();
+    // init_parsley();
     init_daterangepicker();
     init_daterangepicker_right();
     init_daterangepicker_single_call();
@@ -5948,10 +6020,10 @@ $(document).ready(function() {
     init_CustomNotification();
     init_autosize();
     init_autocomplete();
-    // new implementation
+    // // new implementation
 
     init_audiance_timerange_right();
-    init_new_test();
+    init_new_test_audiance_overivew();
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
     // var ctxL = document.getElementById("lineChart").getContext('2d');
