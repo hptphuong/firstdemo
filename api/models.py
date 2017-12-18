@@ -56,8 +56,8 @@ class draft_user_daily_report(Model):
 	users=columns.Integer()
 
 class fsa_log_visit(Model):
-    userid=columns.Text(primary_key=True)
     fsa=columns.Text(primary_key=True)
+    userid=columns.Text(primary_key=True)
     fsid =columns.Text(primary_key=True)
     m_date=columns.BigInt(primary_key=True)
     idsite =columns.Text()

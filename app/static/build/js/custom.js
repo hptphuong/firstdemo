@@ -5901,6 +5901,31 @@ function init_echarts() {
 
 }
 
+function generate_progress_bar(value) {
+    // <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:90%">
+    //                                                 70%
+    //                                             </div>
+
+    if (value >= 0 && value <= 100) {
+        div_progress_bar = document.createElement("div");
+        div_progress_bar.setAttribute("class", "progress-bar m-progress-bar");
+        div_progress_bar.setAttribute("role", "progress-bar");
+        div_progress_bar.setAttribute("aria-valuenow", value);
+        div_progress_bar.setAttribute("aria-valuemin", 0);
+        div_progress_bar.setAttribute("aria-valuemax", 100);
+        div_progress_bar.setAttribute("style", "width:" + value + "%");
+        // div_progress_bar.innerHTML = value + "%";
+        div_progress = document.createElement("div")
+        div_progress.setAttribute("class", "progress m-progress");
+        div_progress.appendChild(div_progress_bar);
+        m_value = document.createTextNode(value + "%");
+        div_progress.appendChild(m_value);
+        return div_progress;
+    }
+    return;
+}
+
+
 function audiance_overivew_explore_table(table_header, table_data) {
     tableare = document.getElementById("audiance_ov_tbl_data");
 
@@ -5925,13 +5950,21 @@ function audiance_overivew_explore_table(table_header, table_data) {
 
     for (rowid = 0; rowid < table_data.length; rowid++) {
         tr = document.createElement("tr");
-        for (j = 0; j < table_data[rowid].length; j++) {
-            if (j == 0) {
-                cellhtml = "&ensp;" + (rowid + 1) + ".&ensp;" + table_data[rowid][j];
-            } else cellhtml = "&emsp;" + table_data[rowid][j]
-            tr.insertCell(j).innerHTML = cellhtml;
+        // for (j = 0; j < table_data[rowid].length; j++) { //fetch on each cell
+        //     if (j == 0) {
+        //         cellhtml = "&ensp;" + (rowid + 1) + ".&ensp;" + table_data[rowid][j];
+        //     } else cellhtml = "&emsp;" + table_data[rowid][j]
+        //     tr.insertCell(j).innerHTML = cellhtml;
 
-        }
+        // }
+        cellhtml = "&ensp;" + (rowid + 1) + ".&ensp;" + table_data[rowid][0];
+        tr.insertCell(0).innerHTML = cellhtml;
+        cellhtml = "&emsp;" + table_data[rowid][1];
+        tr.insertCell(1).innerHTML = cellhtml;
+        cellhtml = generate_progress_bar((table_data[rowid][2] * 100).toFixed(2));
+        tr.insertCell(2).innerHTML = cellhtml.outerHTML;
+
+
         table.appendChild(tr);
     }
 

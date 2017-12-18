@@ -151,6 +151,7 @@
                                         <tr>
                                             <td>Screen Resolution</td>
                                         </tr>
+
                                     </table>
                                 </div>
                                 <div id="audiance_ov_tbl_data" class="audiance_ov_explore">
@@ -170,9 +171,7 @@
 <a href="" ng-click="sort('-votes')" class="btn btn-default" ng-class="{'active':sortBy == '-votes'}">Most Liked</a>
 <a href="" ng-click="sort('-views')" class="btn btn-default" ng-class="{'active':sortBy == '-views'}">Most Viewed</a>
 </div> -->
-{% endblock content %} 
-{% block javascripts %} 
-{{ block.super }}
+{% endblock content %} {% block javascripts %} {{ block.super }}
 <!-- Chart.js -->
 <script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
 {% endblock javascripts %}

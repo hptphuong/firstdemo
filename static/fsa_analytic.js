@@ -1,5 +1,5 @@
 (function() {
-    // version: 0.2
+    // version: 0.2 
     var O = window,
         M = document,
         m_loccation = M.location;;
