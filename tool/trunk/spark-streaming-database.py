@@ -562,11 +562,9 @@ def insert_data_user_daily_report2(source_path):
                 %(users)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
-        i=0
         for row in reader:
-            log.info("+----------------------------------------------+row[1]:>>>>>"+str(i))
-            i+=1
-            # log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
+            log.info("+----------------------------------------------+row[1]:"+row[1])
+            log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
 
             session.execute(
                 query, 
@@ -580,42 +578,79 @@ def insert_data_user_daily_report2(source_path):
         log.info("+-----Insert data into fsa_site successfully----+")
         log.info("+--------------------------------------------------------+")
     pass
-def insert_data_new_user_daily_report(source_path):
+
+
+
+
+def insert_data_fsa_log_visit_modify(source_path):
     with open(source_path, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         session = getSession(KEYSPACE)
         log.info("+-----------Get session successfully-----------+")
         log.info("+----------------------------------------------+")
-        log.info("+----------Begin insert data into fsa_site-------+")
+        log.info("+----------Begin insert data into fsa_log_visit-------+")
         log.info("+----------------------------------------------+")
-        utczone = tz.gettz('UTC')
+
         query = SimpleStatement("""
-            INSERT INTO newuser_daily_report (
-                bucket,
-                m_date, 
-                newusers)
+            INSERT INTO fsa_log_visit (
+            userid, 
+            fsa, 
+            fsid, 
+            m_date, 
+            config_browser_name,
+            config_browser_version, 
+            config_color_depth, 
+            config_os,
+            config_resolution, 
+            config_viewport_size, 
+            location_browser_en,
+            location_browser_lan, 
+            location_country_code,
+            location_country_name, 
+            location_ipv4
+                )
             VALUES (
-                %(bucket)s,
-                %(m_date)s, 
-                %(newusers)s
+                %(userid)s, 
+                %(fsa)s,
+                %(fsid)s,
+                %(m_date)s,
+                %(config_browser_name)s,
+                %(config_browser_version)s,
+                %(config_color_depth)s,
+                %(config_os)s,
+                %(config_resolution)s,
+                %(config_viewport_size)s,
+                %(location_browser_en)s,
+                %(location_browser_lan)s,
+                %(location_country_code)s,
+                %(location_country_name)s,
+                %(location_ipv4)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
-        i=0
         for row in reader:
-            log.info("+----------------------------------------------+row[1]:>>>>>"+str(i))
-            i+=1
-            # log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
-            log.info(int(datetime.strptime(row[0],"%Y-%m-%d").replace(tzinfo=utczone).timestamp()))
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>"+(row[3]))
             session.execute(
                 query, 
                 dict(
-                    bucket=1,
-                    m_date=int(datetime.strptime(row[0],"%Y-%m-%d").replace(tzinfo=utczone).timestamp()), 
-                    newusers=int(row[1])
+                    userid=row[0], 
+                    fsa=row[1],
+                    fsid=row[2],
+                    m_date=int(row[3]),
+                    config_browser_name=row[4],
+                    config_browser_version=row[5],
+                    config_color_depth=row[6],
+                    config_os=row[7],
+                    config_resolution=row[8],
+                    config_viewport_size=row[9],
+                    location_browser_en=row[10],
+                    location_browser_lan=row[11],
+                    location_country_code=row[12],
+                    location_country_name=row[13],
+                    location_ipv4=row[14]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
-        log.info("+-----Insert data into fsa_site successfully----+")
+        log.info("+-----Insert data into fsa_log_visit successfully----+")
         log.info("+--------------------------------------------------------+")
     pass
 if __name__ == "__main__":
@@ -638,7 +673,6 @@ if __name__ == "__main__":
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
     # insert_data_user_daily_report2(path_input1)
-    insert_data_new_user_daily_report(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
     # create_user_daily()
@@ -647,4 +681,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
+    insert_data_fsa_log_visit_modify(path_input1)
     pass
