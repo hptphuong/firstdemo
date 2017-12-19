@@ -4,7 +4,8 @@ from api.models import (
     fsa_user,
     user_daily,
     user_daily_report, # Pure model, not have serialize
-    newuser_daily_report
+    newuser_daily_report,
+    location_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -121,16 +122,7 @@ def userDailyList(request):
 def userDailyReportList(request):
 	if request.method == 'POST':
 		data = JSONParser().parse(request)
-		print(len(data['x1_start']))
-		print(data['x1_start'])
-		print(len(data['x1_end']))
-		print(data['x1_end'])
-		print(len(data['x2_start']))
-		print(data['x2_start'])
-		print(len(data['x2_end']))
-		print(data['x2_end'])
-		# if(len(data['x1_start'])==0 or len(data['x1_end']) or len(data['x2_start']) or len(data['x2_end'])):
-		# 	return JsonResponse({'status':'false','message':'null querry'}, status=400)
+
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp())
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp())
@@ -214,5 +206,49 @@ def newuserDailyReportList(request):
 			timestamp_date_utc=timestamp_date.astimezone(utczone).date()
 			m_response['date2'].append(str(timestamp_date_utc))
 			m_response['value2'].append(query_rslt[i]['newusers'])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+
+	# Request for
+@csrf_exempt
+def locationReportList(request):
+	logger.warn(">>>>>>>>>>>>> post request for location:")
+	if request.method == 'POST':
+		data = JSONParser().parse(request)
+		vLimit=data['limit'] if 'limit' in data else 5 # default value is 5 records
+		logger.warn(">>>>> vLimit:"+str(vLimit))
+		m_response={}
+		query_rslt_limit = (
+			location_report
+				.objects().limit(vLimit)
+		)
+
+		m_response['limit']={}
+		m_response['limit']['location_country_code']=[]
+		m_response['limit']['location_country_name']=[]
+		m_response['limit']['location_count']=[]
+
+		for row in range(0,len(query_rslt_limit)):
+			logger.warn(">>>>>>> row:"+str(row))
+			m_response['limit']['location_country_code'].append(query_rslt_limit[row]['location_country_code'])
+			m_response['limit']['location_country_name'].append(query_rslt_limit[row]['location_country_name'])
+			m_response['limit']['location_count'].append(query_rslt_limit[row]['location_count'])
+
+		m_response['all']={}
+		m_response['all']['location_country_code']=[]
+		m_response['all']['location_country_name']=[]
+		m_response['all']['location_count']=[]
+
+		query_rslt_all=(
+			location_report
+				.objects().all()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			m_response['all']['location_country_code'].append(query_rslt_all[row]['location_country_code'])
+			m_response['all']['location_country_name'].append(query_rslt_all[row]['location_country_name'])
+			m_response['all']['location_count'].append(query_rslt_all[row]['location_count'])
+		
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)

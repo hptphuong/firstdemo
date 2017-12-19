@@ -504,9 +504,9 @@ function plot_fsa_user_chart(array_range_date) {
 
         }
         var data = JSON.stringify({
-            x1_start: x_val.slice(1, 2),
+            x1_start: x_val.slice(0, 1),
             x1_end: x_val.slice(-1),
-            x2_start: x_val2.slice(1, 2),
+            x2_start: x_val2.slice(0, 1),
             x2_end: x_val2.slice(-1)
         });
         // $.post('http://10.88.113.111:8000/api/user_daily/', data=data , function(data) {
@@ -515,7 +515,7 @@ function plot_fsa_user_chart(array_range_date) {
 
         $.ajax({
             type: "POST",
-            url: '/api/user_daily_report/',
+            url: '/api/report/user_daily/',
             data: data,
             contentType: 'application/json',
             success: function(data) {
@@ -524,6 +524,7 @@ function plot_fsa_user_chart(array_range_date) {
                 m_data['date2'].unshift('x1');
                 m_data['value1'].unshift('data1');
                 m_data['value2'].unshift('data2');
+
                 callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
             }
 
@@ -624,7 +625,7 @@ function plot_fsa_new_user_chart(array_range_date) {
 
         $.ajax({
             type: "POST",
-            url: '/api/new_user_daily_report/',
+            url: '/api/report/new_user_daily/',
             data: data,
             contentType: 'application/json',
             success: function(data) {
@@ -5908,8 +5909,8 @@ function generate_progress_bar(value) {
 
     if (value >= 0 && value <= 100) {
         div_progress_bar = document.createElement("div");
-        div_progress_bar.setAttribute("class", "progress-bar m-progress-bar");
-        div_progress_bar.setAttribute("role", "progress-bar");
+        div_progress_bar.setAttribute("class", "progress-bar m-progress-bar bg-green");
+        div_progress_bar.setAttribute("role", "progress-bar ");
         div_progress_bar.setAttribute("aria-valuenow", value);
         div_progress_bar.setAttribute("aria-valuemin", 0);
         div_progress_bar.setAttribute("aria-valuemax", 100);
@@ -6014,6 +6015,32 @@ function init_new_test_audiance_overivew() {
     // audiance_overivew_explore_table(table_header_list['Language'], table_data);
     addRowHandlers();
 }
+
+function init_index_visitors_location() {
+    if ((!document.location.pathname.match("audiance_overview.html")) && (!document.location.pathname.match("audiance_overview.html"))) {
+        var m_data = JSON.stringify({
+            "limit": 5
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '/api/report/location/',
+            data: m_data,
+            contentType: 'application/json',
+            success: function(data) {
+                // console.log(data);
+                data = JSON.parse(data);
+                data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b);
+                data.all['m_total_countries'] = data.all.location_country_code;
+                // percent in limit
+                data.limit['percent'] = data.limit.location_count.map(function(item) {
+                    return Math.round(item * 100 / data.all['m_total_counts']);
+                });
+            }
+
+        });
+    }
+}
 $(document).ready(function() {
 
     init_sparklines();
@@ -6056,7 +6083,9 @@ $(document).ready(function() {
     // // new implementation
 
     init_audiance_timerange_right();
+    init_index_visitors_location();
     init_new_test_audiance_overivew();
+
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
     // var ctxL = document.getElementById("lineChart").getContext('2d');
