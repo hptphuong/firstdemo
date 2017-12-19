@@ -6030,12 +6030,16 @@ function init_index_visitors_location() {
             success: function(data) {
                 // console.log(data);
                 data = JSON.parse(data);
-                data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b);
-                data.all['m_total_countries'] = data.all.location_country_code;
+                data.all.location_count.length > 0 &&
+                    (data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b)) &&
+                    data.all.location_country_code.length > 0 && (data.all['m_total_countries'] = data.all.location_country_code.length);
                 // percent in limit
-                data.limit['percent'] = data.limit.location_count.map(function(item) {
-                    return Math.round(item * 100 / data.all['m_total_counts']);
-                });
+                data.limit.location_count.length > 0 && (data.limit['percent'] = data.limit.location_count
+                    .map(function(item) {
+                        return Math.round(item * 100 / data.all['m_total_counts']);
+                    }));
+                $('.line_30').
+                text(Number(data.all['m_total_counts']).toLocaleString() + " Views from " + String(data.all['m_total_countries']) + " countries");
             }
 
         });

@@ -488,7 +488,8 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    cluster = Cluster(['10.88.113.74'])
+    # cluster = Cluster(['10.88.113.74'])
+    cluster = Cluster(['127.0.0.1'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -653,6 +654,43 @@ def insert_data_fsa_log_visit_modify(source_path):
         log.info("+-----Insert data into fsa_log_visit successfully----+")
         log.info("+--------------------------------------------------------+")
     pass
+def insert_data_location_report(source_path):
+    with open(source_path, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        session = getSession(KEYSPACE)
+        log.info("+-----------Get session successfully-----------+")
+        log.info("+----------------------------------------------+")
+        log.info("+----------Begin insert data into fsa_site-------+")
+        log.info("+----------------------------------------------+")
+        query = SimpleStatement("""
+            INSERT INTO location_report (
+                bucket,
+                location_count, 
+                location_country_code,
+                location_country_name
+                )
+            VALUES (
+                %(bucket)s,
+                %(location_count)s, 
+                %(location_country_code)s,
+                %(location_country_name)s
+                )
+            """, consistency_level=ConsistencyLevel.ONE)
+        for row in reader:
+        # log.info("+----------------------------------------------+userss:"+row)
+            session.execute(
+                query, 
+                dict(
+                    bucket=2,
+                    location_count=int(row[1]), 
+                    location_country_code=(row[2]),
+                    location_country_name=(row[3])
+                ))
+            pass
+        log.info("+--------------------------------------------------------+")
+        log.info("+-----Insert data into fsa_site successfully----+")
+        log.info("+--------------------------------------------------------+")
+    pass
 if __name__ == "__main__":
     # if len(sys.argv) !=4:
     #     log.info('+---------------------------------------------------------+')
@@ -681,5 +719,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    insert_data_fsa_log_visit_modify(path_input1)
+    insert_data_location_report(path_input1)
     pass
