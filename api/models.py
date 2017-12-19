@@ -75,5 +75,12 @@ class fsa_log_visit(Model):
     config_viewport_size=columns.Text()
     config_java =columns.Text()
     referal_xxx =columns.Text()
+class location_report(Model):
+    bucket=columns.Integer(primary_key=True)
+    location_count=columns.Integer(primary_key=True,clustering_order="DESC")
+    location_country_code=columns.Text(primary_key=True)
+    location_country_name= columns.Text()
+    
+
 
 

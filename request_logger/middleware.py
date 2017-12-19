@@ -28,6 +28,8 @@ class RequestLoggerMiddleware(MiddlewareMixin):
         self.get_response = get_response
 
     def process_request(self, request):
+        logger.warn(">>>>>>>>>>>>>>>> Running process_request in RequestLoggerMiddleware >>>>>>>>>")
+        logger.warn("request.path"+request.path)
         if (request.path=='/a.gif'):
 
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

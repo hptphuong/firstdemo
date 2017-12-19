@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     # 'firstpycharm.middleware.BookMiddleware',
-    # 'request_logger.middleware.RequestLoggerMiddleware',
+    'request_logger.middleware.RequestLoggerMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
