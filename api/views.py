@@ -213,42 +213,19 @@ def newuserDailyReportList(request):
 	# Request for
 @csrf_exempt
 def locationReportList(request):
-	logger.warn(">>>>>>>>>>>>> post request for location:")
 	if request.method == 'POST':
-		data = JSONParser().parse(request)
-		vLimit=data['limit'] if 'limit' in data else 5 # default value is 5 records
-		logger.warn(">>>>> vLimit:"+str(vLimit))
+		logger.warn(">>>>>>>>>>>>> post request for location:")
 		m_response={}
-		query_rslt_limit = (
-			location_report
-				.objects().limit(vLimit)
-		)
-
-		m_response['limit']={}
-		m_response['limit']['location_country_code']=[]
-		m_response['limit']['location_country_name']=[]
-		m_response['limit']['location_count']=[]
-
-		for row in range(0,len(query_rslt_limit)):
-			logger.warn(">>>>>>> row:"+str(row))
-			m_response['limit']['location_country_code'].append(query_rslt_limit[row]['location_country_code'])
-			m_response['limit']['location_country_name'].append(query_rslt_limit[row]['location_country_name'])
-			m_response['limit']['location_count'].append(query_rslt_limit[row]['location_count'])
-
-		m_response['all']={}
-		m_response['all']['location_country_code']=[]
-		m_response['all']['location_country_name']=[]
-		m_response['all']['location_count']=[]
-
 		query_rslt_all=(
 			location_report
 				.objects().all()
 			)
-
+		m_response['byCode']={}
+		m_response['byName']={}
 		for row in range(0,len(query_rslt_all)):
-			m_response['all']['location_country_code'].append(query_rslt_all[row]['location_country_code'])
-			m_response['all']['location_country_name'].append(query_rslt_all[row]['location_country_name'])
-			m_response['all']['location_count'].append(query_rslt_all[row]['location_count'])
-		
+			m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
+			
+			m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
+
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)

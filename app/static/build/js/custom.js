@@ -614,9 +614,9 @@ function plot_fsa_new_user_chart(array_range_date) {
 
         }
         var data = JSON.stringify({
-            x1_start: x_val.slice(1, 2),
+            x1_start: x_val.slice(0, 1),
             x1_end: x_val.slice(-1),
-            x2_start: x_val2.slice(1, 2),
+            x2_start: x_val2.slice(0, 1),
             x2_end: x_val2.slice(-1)
         });
         // $.post('http://10.88.113.111:8000/api/user_daily/', data=data , function(data) {
@@ -940,22 +940,7 @@ function init_JQVmap() {
 
     console.log('init_JQVmap');
 
-    if ($('#world-map-gdp').length) {
 
-        $('#world-map-gdp').vectorMap({
-            map: 'world_en',
-            backgroundColor: null,
-            color: '#ffffff',
-            hoverOpacity: 0.7,
-            selectedColor: '#666666',
-            enableZoom: true,
-            showTooltip: true,
-            values: sample_data,
-            scaleColors: ['#E6F2F0', '#149B7E'],
-            normalizeFunction: 'polynomial'
-        });
-
-    }
 
     if ($('#usa_map').length) {
 
@@ -6018,28 +6003,90 @@ function init_new_test_audiance_overivew() {
 
 function init_index_visitors_location() {
     if ((!document.location.pathname.match("audiance_overview.html")) && (!document.location.pathname.match("audiance_overview.html"))) {
-        var m_data = JSON.stringify({
-            "limit": 5
-        });
+        // var m_data = JSON.stringify({
+        //     "limit": 5
+        // });
 
         $.ajax({
             type: "POST",
             url: '/api/report/location/',
-            data: m_data,
             contentType: 'application/json',
             success: function(data) {
                 // console.log(data);
+                var sortByDe = []
+                var limitTop = 5;
                 data = JSON.parse(data);
-                data.all.location_count.length > 0 &&
-                    (data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b)) &&
-                    data.all.location_country_code.length > 0 && (data.all['m_total_countries'] = data.all.location_country_code.length);
-                // percent in limit
-                data.limit.location_count.length > 0 && (data.limit['percent'] = data.limit.location_count
-                    .map(function(item) {
-                        return Math.round(item * 100 / data.all['m_total_counts']);
-                    }));
+                data['totalCountry'] = Object.keys(data.byCode).length;
+                data['totalViews'] = 0;
+
+                for (k in data.byCode) {
+                    data['totalViews'] = data['totalViews'] + data.byCode[k];
+
+                }
+
+
+                for (k in data.byName) {
+
+                    sortByDe.push([k, data.byName[k]]);
+
+                }
+
+                sortByDe.sort(function(a, b) {
+                    return b[1] - a[1]
+                });
+                // data.all.location_count.length > 0 &&
+                //     (data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b)) &&
+                //     data.all.location_country_code.length > 0 && (data.all['m_total_countries'] = data.all.location_country_code.length);
+                // // percent in limit
+                // data.limit.location_count.length > 0 && (data.limit['percent'] = data.limit.location_count
+                //     .map(function(item) {
+                //         return Math.round(item * 100 / data.all['m_total_counts']);
+                //     }));
+                // // // Make list of top limit countries
                 $('.line_30').
-                text(Number(data.all['m_total_counts']).toLocaleString() + " Views from " + String(data.all['m_total_countries']) + " countries");
+                text(Number(data['totalViews']).toLocaleString() + " Views from " + String(data['totalCountry']) + " countries");
+
+                var tbl_visitor_list = document.getElementsByClassName("countries_list")[0];
+                var tbody = document.createElement("tbody");
+                for (i = 0; i < limitTop; i++) {
+                    var tr = document.createElement("tr");
+                    tr.insertCell(0).innerHTML = sortByDe[i][0];
+                    tr.insertCell(1).innerHTML = Math.round(sortByDe[i][1] / data['totalViews'] * 100) + "%";
+                    tbody.appendChild(tr);
+
+                };
+                tbl_visitor_list.replaceChild(tbody, tbl_visitor_list.firstElementChild);
+                // var jsonData = {};
+                // for (i = 0; i < data.all.location_country_code.length; i++) {
+                //     jsonData[data.all.location_country_code[i].toLowerCase()] = (data.all.location_count[i]);
+                // }
+
+                // Make world-map-gdp
+                if ($('#world-map-gdp').length && Object.keys(data.byCode).length > 0) {
+
+                    $('#world-map-gdp').vectorMap({
+                        map: 'world_en',
+                        backgroundColor: null,
+                        color: '#ffffff',
+                        hoverOpacity: 0.7,
+                        selectedColor: '#666666',
+                        enableZoom: true,
+                        showTooltip: true,
+                        values: data.byCode,
+                        scaleColors: ['#E6F2F0', '#149B7E'],
+                        normalizeFunction: 'polynomial',
+                        onLabelShow: function(event, label, code) {
+                            //     // if (states.toLowerCase().indexOf(code) <= -1) {
+                            //     //     event.preventDefault();
+                            //     // } else if (label[0].innerHTML == "China") {
+                            //     // }
+                            if (data.byCode[code])
+                                label.append(': ' + data.byCode[code] + ' Users');
+                        },
+                    });
+
+                }
+
             }
 
         });
