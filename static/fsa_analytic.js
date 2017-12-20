@@ -460,6 +460,26 @@
         init_check_mobile();
 
 
+        switch (true) {
+            case isMobile.apple.phone:
+                device = "Apple Phone";
+                break;
+            case isMobile.apple.ipod:
+                device = "Apple Ipod";
+                break;
+            case isMobile.apple.table:
+                device = "Apple Tablet";
+                break;
+            case isMobile.android.phone:
+                device = "Android Phone";
+                break;
+            case isMobile.android.tablet:
+                device = "Android Tablet";
+                break;
+            default:
+                device = "Others";
+        }
+        tracker.set("config.device", device);
 
         // add to tracker
         this.trackers.push(tracker);
@@ -483,6 +503,7 @@
         tailUrl = tailUrl + "&sr=" + a.get("screenResolution");
         tailUrl = tailUrl + "&vp=" + a.get("viewportSize");
         tailUrl = tailUrl + "&je=" + a.get("javaEnabled") * 1;
+        tailUrl = tailUrl + "&dev=" + a.get("config.device") * 1;
         a.get("userId") && (tailUrl = tailUrl + "&uid=" + a.get("userId"));
 
         // fsaCore.requestImage('http://127.0.0.1:8000/a.gif?', tailUrl);
