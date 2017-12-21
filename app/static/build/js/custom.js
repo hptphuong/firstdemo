@@ -6173,20 +6173,23 @@ function init_index_device() {
 
                 }
 
-                var tbl_visitor_list = document.getElementsByClassName("countries_list")[0];
+                var tbl_tile_info = document.getElementsByClassName("tile_info")[0];
                 var tbody = document.createElement("tbody");
                 i_class_arry = ['fa fa-square blue', 'fa fa-square green', 'fa fa-square purple', 'fa fa-square aero', 'fa fa-square red'];
+                var tr = document.createElement("tr");
                 for (i = 0; i < limitTop; i++) {
-                    var tr = document.createElement("tr"),
-                        p_tag = document.createElement("p"),
-                        i_tag = document.createElement("i"),
-                        i_tag.setAttribute("class", i_class_arry[i]);
-                    i_tag.style.color = backgroundColor_array[i]
-                    tr.insertCell(0).innerHTML = sortByDe[i][0];
-                    tr.insertCell(1).innerHTML = Math.round(sortByDe[i][1] / totalViews * 100) + "%";
+                    var p_tag = document.createElement("p"),
+                        i_tag = document.createElement("i");
+                    i_tag.setAttribute("class", i_class_arry[i]);
+                    i_tag.innerHTML = labels_data[i];
+                    p_tag.appendChild(i_tag);
+
+                    tr.insertCell(0).appendChild(p_tag);
+                    tr.insertCell(1).innerHTML = Math.round(data_value[i] / totalViews * 100) + "%";
                     tbody.appendChild(tr);
 
                 };
+                tbl_tile_info.replaceChild(tbody, tbl_tile_info.firstElementChild);
 
             }
 
