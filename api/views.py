@@ -5,7 +5,9 @@ from api.models import (
     user_daily,
     user_daily_report, # Pure model, not have serialize
     newuser_daily_report,
-    location_report
+    location_report,
+    device_report,
+    browser_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -227,5 +229,19 @@ def locationReportList(request):
 			
 			m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
 
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+@csrf_exempt
+def deviceReportList(request):
+	if request.method == 'GET':
+		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		m_response={}
+		query_rslt_all=(
+			device_report
+				.objects().all()
+			)
+		for row in range(0,len(query_rslt_all)):
+			m_response[query_rslt_all[row]['config_device']]=(query_rslt_all[row]['device_count'])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)

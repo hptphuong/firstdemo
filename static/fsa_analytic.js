@@ -162,6 +162,7 @@
             windows_tablet = /(?=.*\bWindows\b)(?=.*\bARM\b)/i, // Match 'Windows' AND 'ARM'
             other_blackberry = /BlackBerry/i,
             other_blackberry_10 = /BB10/i,
+            other_blackberry_PlayBook = /PlayBook/i,
             other_opera = /Opera Mini/i,
             other_chrome = /(CriOS|Chrome)(?=.*\bMobile\b)/i,
             other_firefox = /(?=.*\bFirefox\b)(?=.*\bMobile\b)/i, // Match 'Firefox' AND 'Mobile'
@@ -236,6 +237,7 @@
             this.other = {
                 blackberry: match(other_blackberry, ua),
                 blackberry10: match(other_blackberry_10, ua),
+                blackberry_PlayBook: match(other_blackberry_PlayBook, ua),
                 opera: match(other_opera, ua),
                 firefox: match(other_firefox, ua),
                 chrome: match(other_chrome, ua),
@@ -275,7 +277,46 @@
         } else {
             window.isMobile = instantiate();
         }
+        var IsBrowserClass = function(userAgent) {
+            var ua = userAgent || navigator.userAgent;
+
+            this.isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
+            // Opera 8.0+
+            this.isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+            // Safari 3.0+ "[object HTMLElementConstructor]" 
+            this.isSafari = /constructor/i.test(window.HTMLElement) || (function(p) {
+                return p.toString() === "[object SafariRemoteNotification]";
+            })(!window['safari'] || safari.pushNotification);
+            // Internet Explorer 6-11
+            this.isIE = /*@cc_on!@*/ false || !!document.documentMode;
+            // Edge 20+
+            this.isEdge = !this.isIE && !!window.StyleMedia;
+
+            // Chrome 1+
+            this.isChrome = !!window.chrome && !!window.chrome.webstore;
+        };
+
+        var instantiateBrowser = function() {
+            var IM = new IsBrowserClass();
+            IM.Class = IsBrowserClass;
+            return IM;
+        };
+
+        if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined') {
+            //node
+            module.exports = IsBrowserClass;
+        } else if (typeof module !== 'undefined' && module.exports && typeof window !== 'undefined') {
+            //browserify
+            module.exports = instantiateBrowser();
+        } else if (typeof define === 'function' && define.amd) {
+            //AMD
+            define('isBrowser', [], window.isBrowser = instantiateBrowser());
+        } else {
+            window.isBrowser = instantiateBrowser();
+        }
+
     };
+
 
 
 
@@ -467,7 +508,13 @@
             case isMobile.apple.ipod:
                 device = "Apple Ipod";
                 break;
-            case isMobile.apple.table:
+            case isMobile.windows.phone:
+                device = "Window Phone";
+                break;
+            case isMobile.windows.tablet:
+                device = "Window Tablet";
+                break;
+            case isMobile.apple.tablet:
                 device = "Apple Tablet";
                 break;
             case isMobile.android.phone:
@@ -476,11 +523,42 @@
             case isMobile.android.tablet:
                 device = "Android Tablet";
                 break;
+
+            case isMobile.other.blackberry10:
+                device = "BlackBerry 10";
+                break;
+            case isMobile.other.blackberry_PlayBook:
+                device = "BlackBerry PlayBook";
+                break;
+            case isMobile.other.blackberry:
+                device = "Other BlackBerry";
+                break;
+            default:
+                device = "Desktop";
+        }
+        tracker.set("config_device", device);
+
+        switch (true) {
+            case isBrowser.isFirefox:
+                device = "Firefox";
+                break;
+            case isBrowser.isChrome:
+                device = "Chrome";
+                break;
+            case isBrowser.isSafari:
+                device = "Safari";
+                break;
+            case isBrowser.isIE:
+                device = "IE";
+                break;
+            case isBrowser.isEdge:
+                device = "Edge";
+                break;
             default:
                 device = "Others";
         }
-        tracker.set("config.device", device);
-
+        tracker.set("config_browser", device);
+        // determine browser
         // add to tracker
         this.trackers.push(tracker);
 
@@ -503,7 +581,8 @@
         tailUrl = tailUrl + "&sr=" + a.get("screenResolution");
         tailUrl = tailUrl + "&vp=" + a.get("viewportSize");
         tailUrl = tailUrl + "&je=" + a.get("javaEnabled") * 1;
-        tailUrl = tailUrl + "&dev=" + a.get("config.device") * 1;
+        tailUrl = tailUrl + "&cdev=" + a.get("config_device");
+        tailUrl = tailUrl + "&cbr=" + a.get("config_browser");
         a.get("userId") && (tailUrl = tailUrl + "&uid=" + a.get("userId"));
 
         // fsaCore.requestImage('http://127.0.0.1:8000/a.gif?', tailUrl);

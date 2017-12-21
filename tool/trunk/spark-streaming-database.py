@@ -90,7 +90,7 @@ def create_fsa_log_visit():
             location_country_code text,
             location_country_name text,
             location_browser_en text,
-            config_os text,
+            config_browser text,
             config_browser_name text,
             config_browser_version text,
             config_resolution text,
@@ -488,8 +488,7 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    # cluster = Cluster(['10.88.113.74'])
-    cluster = Cluster(['127.0.0.1'])
+    cluster = Cluster(['10.88.113.74'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -601,14 +600,15 @@ def insert_data_fsa_log_visit_modify(source_path):
             config_browser_name,
             config_browser_version, 
             config_color_depth, 
-            config_os,
+            config_browser,
             config_resolution, 
             config_viewport_size, 
             location_browser_en,
             location_browser_lan, 
             location_country_code,
             location_country_name, 
-            location_ipv4
+            location_ipv4,
+            config_device
                 )
             VALUES (
                 %(userid)s, 
@@ -618,18 +618,19 @@ def insert_data_fsa_log_visit_modify(source_path):
                 %(config_browser_name)s,
                 %(config_browser_version)s,
                 %(config_color_depth)s,
-                %(config_os)s,
+                %(config_browser)s,
                 %(config_resolution)s,
                 %(config_viewport_size)s,
                 %(location_browser_en)s,
                 %(location_browser_lan)s,
                 %(location_country_code)s,
                 %(location_country_name)s,
-                %(location_ipv4)s
+                %(location_ipv4)s,
+                %(config_device)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
         for row in reader:
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>"+(row[3]))
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>"+(row[15]))
             session.execute(
                 query, 
                 dict(
@@ -640,55 +641,19 @@ def insert_data_fsa_log_visit_modify(source_path):
                     config_browser_name=row[4],
                     config_browser_version=row[5],
                     config_color_depth=row[6],
-                    config_os=row[7],
+                    config_browser=row[7],
                     config_resolution=row[8],
                     config_viewport_size=row[9],
                     location_browser_en=row[10],
                     location_browser_lan=row[11],
                     location_country_code=row[12],
                     location_country_name=row[13],
-                    location_ipv4=row[14]
+                    location_ipv4=row[14],
+                    config_device=row[15]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
         log.info("+-----Insert data into fsa_log_visit successfully----+")
-        log.info("+--------------------------------------------------------+")
-    pass
-def insert_data_location_report(source_path):
-    with open(source_path, 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        session = getSession(KEYSPACE)
-        log.info("+-----------Get session successfully-----------+")
-        log.info("+----------------------------------------------+")
-        log.info("+----------Begin insert data into fsa_site-------+")
-        log.info("+----------------------------------------------+")
-        query = SimpleStatement("""
-            INSERT INTO location_report (
-                bucket,
-                location_count, 
-                location_country_code,
-                location_country_name
-                )
-            VALUES (
-                %(bucket)s,
-                %(location_count)s, 
-                %(location_country_code)s,
-                %(location_country_name)s
-                )
-            """, consistency_level=ConsistencyLevel.ONE)
-        for row in reader:
-        # log.info("+----------------------------------------------+userss:"+row)
-            session.execute(
-                query, 
-                dict(
-                    bucket=2,
-                    location_count=int(row[1]), 
-                    location_country_code=(row[2]),
-                    location_country_name=(row[3])
-                ))
-            pass
-        log.info("+--------------------------------------------------------+")
-        log.info("+-----Insert data into fsa_site successfully----+")
         log.info("+--------------------------------------------------------+")
     pass
 if __name__ == "__main__":
@@ -719,5 +684,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    insert_data_location_report(path_input1)
+    insert_data_fsa_log_visit_modify(path_input1)
     pass

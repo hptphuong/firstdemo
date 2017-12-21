@@ -67,7 +67,8 @@ class fsa_log_visit(Model):
     location_country_code=columns.Text()
     location_country_name=columns.Text()
     location_browser_en=columns.Text()
-    config_os=columns.Text()
+    config_browser=columns.Text()
+    config_device=columns.Text()
     config_browser_name=columns.Text()
     config_browser_version=columns.Text()
     config_resolution=columns.Text()
@@ -75,11 +76,20 @@ class fsa_log_visit(Model):
     config_viewport_size=columns.Text()
     config_java =columns.Text()
     referal_xxx =columns.Text()
+
 class location_report(Model):
     bucket=columns.Integer(primary_key=True)
     location_count=columns.Integer()
     location_country_code=columns.Text(primary_key=True)
     location_country_name= columns.Text()
+class device_report(Model):
+    bucket=columns.Integer(primary_key=True) # 3
+    device_count=columns.Integer()
+    config_device=columns.Text(primary_key=True)
+class browser_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    browser_count=columns.Integer()
+    config_browser=columns.Text(primary_key=True)
     
 
 

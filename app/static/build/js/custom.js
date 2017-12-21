@@ -6006,7 +6006,7 @@ function init_index_visitors_location() {
         // var m_data = JSON.stringify({
         //     "limit": 5
         // });
-
+        // get location report
         $.ajax({
             type: "POST",
             url: '/api/report/location/',
@@ -6024,7 +6024,7 @@ function init_index_visitors_location() {
 
                 }
 
-
+                // Change to array to sort
                 for (k in data.byName) {
 
                     sortByDe.push([k, data.byName[k]]);
@@ -6034,14 +6034,7 @@ function init_index_visitors_location() {
                 sortByDe.sort(function(a, b) {
                     return b[1] - a[1]
                 });
-                // data.all.location_count.length > 0 &&
-                //     (data.all['m_total_counts'] = data.all.location_count.reduce((a, b) => a + b)) &&
-                //     data.all.location_country_code.length > 0 && (data.all['m_total_countries'] = data.all.location_country_code.length);
-                // // percent in limit
-                // data.limit.location_count.length > 0 && (data.limit['percent'] = data.limit.location_count
-                //     .map(function(item) {
-                //         return Math.round(item * 100 / data.all['m_total_counts']);
-                //     }));
+
                 // // // Make list of top limit countries
                 $('.line_30').
                 text(Number(data['totalViews']).toLocaleString() + " Views from " + String(data['totalCountry']) + " countries");
@@ -6090,8 +6083,123 @@ function init_index_visitors_location() {
             }
 
         });
+
+
+
+
+
+
+
     }
-}
+};
+
+
+
+function init_index_device() {
+    if ((!document.location.pathname.match("audiance_overview.html")) && (!document.location.pathname.match("audiance_overview.html"))) {
+
+        $.ajax({
+            type: "GET",
+            url: '/api/report/device/',
+            contentType: 'application/json',
+            success: function(data) {
+                // console.log(data);
+                var sortByDe = []
+                var limitTop = 5,
+                    totalViews = 0;
+                data = JSON.parse(data);
+                // data['totalCountry'] = Object.keys(data.byCode).length;
+
+
+
+
+                // Change to array to sort
+                for (k in data) {
+
+                    sortByDe.push([k, data[k]]);
+
+                }
+
+                sortByDe.sort(function(a, b) {
+                    return b[1] - a[1]
+                });
+
+                for (k in data) {
+                    totalViews = totalViews + data[k];
+                }
+                //get top limit
+                var labels_data = [],
+                    data_value = [];
+                for (k = 0; k < limitTop; k++) {
+                    labels_data.push(sortByDe[2][0]);
+                    data_value.push(sortByDe[2][1]);
+                }
+                var backgroundColor_array = ["#BDC3C7", "#9B59B6", "#E74C3C", "#26B99A", "#3498DB"];
+
+
+                // tbl_visitor_list.replaceChild(tbody, tbl_visitor_list.firstElementChild);
+
+
+                // Make Device usage canvas
+                if ($('#canvas_donut_for_device_usage').length) {
+                    // var labels_data = ["Symbian", "Blackberry", "Other", "Android", "IOS"],
+                    //     data_value = [15, 20, 30, 10, 30];
+
+                    var chart_doughnut_settings = {
+                        type: 'doughnut',
+                        tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+                        data: {
+                            labels: labels_data,
+                            datasets: [{
+                                data: data_value,
+                                backgroundColor: backgroundColor_array,
+                                hoverBackgroundColor: [
+                                    "#CFD4D8",
+                                    "#B370CF",
+                                    "#E95E4F",
+                                    "#36CAAB",
+                                    "#49A9EA"
+                                ]
+                            }]
+                        },
+                        options: {
+                            legend: false,
+                            responsive: false
+                        }
+                    };
+
+                    var chart_element = $('#canvas_donut_for_device_usage');
+                    var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+
+                }
+
+                var tbl_visitor_list = document.getElementsByClassName("countries_list")[0];
+                var tbody = document.createElement("tbody");
+                i_class_arry = ['fa fa-square blue', 'fa fa-square green', 'fa fa-square purple', 'fa fa-square aero', 'fa fa-square red'];
+                for (i = 0; i < limitTop; i++) {
+                    var tr = document.createElement("tr"),
+                        p_tag = document.createElement("p"),
+                        i_tag = document.createElement("i"),
+                        i_tag.setAttribute("class", i_class_arry[i]);
+                    i_tag.style.color = backgroundColor_array[i]
+                    tr.insertCell(0).innerHTML = sortByDe[i][0];
+                    tr.insertCell(1).innerHTML = Math.round(sortByDe[i][1] / totalViews * 100) + "%";
+                    tbody.appendChild(tr);
+
+                };
+
+            }
+
+        });
+
+
+
+
+
+
+
+    }
+};
 $(document).ready(function() {
 
     init_sparklines();
@@ -6136,6 +6244,7 @@ $(document).ready(function() {
     init_audiance_timerange_right();
     init_index_visitors_location();
     init_new_test_audiance_overivew();
+    init_index_device();
 
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
