@@ -235,7 +235,7 @@ def locationReportList(request):
 @csrf_exempt
 def deviceReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		logger.warn(">>>>>>>>>>>>> GET request for device:")
 		m_response={}
 		query_rslt_all=(
 			device_report
@@ -245,3 +245,22 @@ def deviceReportList(request):
 			m_response[query_rslt_all[row]['config_device']]=(query_rslt_all[row]['device_count'])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
+
+
+@csrf_exempt
+def browsersReportList(request):
+	if request.method == 'GET':
+		logger.warn(">>>>>>>>>>>>> GET request for browsers:")
+		m_response={}
+		query_rslt_all=(
+			browser_report
+				.objects().all()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			logger.warn(str(row))
+			m_response[query_rslt_all[row]['config_browser']]=(query_rslt_all[row]['browser_count'])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+

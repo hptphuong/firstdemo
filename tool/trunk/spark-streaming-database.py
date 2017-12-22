@@ -17,7 +17,7 @@ from datetime import datetime
 # from pyspark.sql import Row
 import csv
 
-KEYSPACE = 'test'
+KEYSPACE = 'web_analytic'
 def create_fsa_user():
     session = getSession(KEYSPACE)
     log.info("+-----------Get session successfully-----------+")
@@ -489,6 +489,7 @@ def insert_data_fsa_log_visit(source_path):
 
 def getSession(keySpaceName):
     cluster = Cluster(['10.88.113.74'])
+    # cluster = Cluster(['10.88.96.94'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -588,7 +589,7 @@ def insert_data_fsa_log_visit_modify(source_path):
         session = getSession(KEYSPACE)
         log.info("+-----------Get session successfully-----------+")
         log.info("+----------------------------------------------+")
-        log.info("+----------Begin insert data into fsa_log_visit-------+")
+        log.info("+----------insert_data_fsa_log_visit_modify-------+")
         log.info("+----------------------------------------------+")
 
         query = SimpleStatement("""
@@ -597,10 +598,9 @@ def insert_data_fsa_log_visit_modify(source_path):
             fsa, 
             fsid, 
             m_date, 
-            config_browser_name,
+            config_browser,
             config_browser_version, 
             config_color_depth, 
-            config_browser,
             config_resolution, 
             config_viewport_size, 
             location_browser_en,
@@ -615,10 +615,9 @@ def insert_data_fsa_log_visit_modify(source_path):
                 %(fsa)s,
                 %(fsid)s,
                 %(m_date)s,
-                %(config_browser_name)s,
+                %(config_browser)s,
                 %(config_browser_version)s,
                 %(config_color_depth)s,
-                %(config_browser)s,
                 %(config_resolution)s,
                 %(config_viewport_size)s,
                 %(location_browser_en)s,
@@ -638,10 +637,9 @@ def insert_data_fsa_log_visit_modify(source_path):
                     fsa=row[1],
                     fsid=row[2],
                     m_date=int(row[3]),
-                    config_browser_name=row[4],
+                    config_browser=row[4],
                     config_browser_version=row[5],
                     config_color_depth=row[6],
-                    config_browser=row[7],
                     config_resolution=row[8],
                     config_viewport_size=row[9],
                     location_browser_en=row[10],
@@ -653,7 +651,7 @@ def insert_data_fsa_log_visit_modify(source_path):
                 ))
             pass
         log.info("+--------------------------------------------------------+")
-        log.info("+-----Insert data into fsa_log_visit successfully----+")
+        log.info("+-----Insert data into fsa_log_visit successfully----+             insert_data_fsa_log_visit_modify")
         log.info("+--------------------------------------------------------+")
     pass
 if __name__ == "__main__":

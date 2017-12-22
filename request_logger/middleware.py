@@ -43,7 +43,7 @@ class RequestLoggerMiddleware(MiddlewareMixin):
             try:
                 dataExtracted['country'] = str(g.country(ip))
             except:
-                ip = '27.116.56.1'
+                ip = '58.187.42.29'
                 dataExtracted['ip_notfound']=1
                 dataExtracted['country'] = str(g.country(ip))
             dataExtracted['country']=(g.country(ip))

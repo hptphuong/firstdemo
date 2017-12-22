@@ -103,9 +103,10 @@ WSGI_APPLICATION = 'firstpycharm.wsgi.application'
 DATABASES = {
      'default': {
          'ENGINE': 'django_cassandra_engine',
-         'NAME': 'test',
+         'NAME': 'web_analytic',
          'TEST_NAME': 'test_db',
          'HOST': '10.88.113.74',
+         # 'HOST': '10.88.96.94',
          # 'HOST': '127.0.0.1',
          'OPTIONS': {
              'replication': {

@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^report/new_user_daily/$', views.newuserDailyReportList),
     url(r'^report/location/$', views.locationReportList),
     url(r'^report/device/$', views.deviceReportList),
+    url(r'^report/browsers/$', views.browsersReportList),
     # url(r'^user/(?P<id>[0-9a-zA-Z]+)/$', views.user_detail),
     # url(r'^collaborative-filtering/(?P<id>[0-9a-zA-Z]+)/$', views.getMovieFromCollaborativeFilteringByUserId),
     # url(r'^similarity/(?P<id>[0-9a-zA-Z]+)/$', views.getMovieFromSimilarityByMovieId),

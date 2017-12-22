@@ -2175,13 +2175,13 @@ function init_audiance_timerange_right() {
     var cb = function(start, end, label) {
         console.log(start.toISOString(), end.toISOString(), label);
         $('#audiance_timerange_right span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-
+        //  
     };
     var optionSet1 = {
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
         minDate: '01/01/2012',
-        maxDate: '12/31/2015',
+        maxDate: moment().format('MM/DD/YYYY'),
         dateLimit: {
             days: 60
         },
@@ -2191,12 +2191,7 @@ function init_audiance_timerange_right() {
         timePickerIncrement: 1,
         timePicker12Hour: false,
         ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+
         },
         opens: 'left',
         buttonClasses: ['btn btn-default'],
@@ -2261,7 +2256,7 @@ function init_daterangepicker() {
         timePickerIncrement: 1,
         timePicker12Hour: true,
         ranges: {
-            'Today': [moment(), moment()],
+            // 'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
@@ -6131,8 +6126,8 @@ function init_index_device() {
                 var labels_data = [],
                     data_value = [];
                 for (k = 0; k < limitTop; k++) {
-                    labels_data.push(sortByDe[2][0]);
-                    data_value.push(sortByDe[2][1]);
+                    labels_data.push(sortByDe[k][0]);
+                    data_value.push(sortByDe[k][1]);
                 }
                 var backgroundColor_array = ["#BDC3C7", "#9B59B6", "#E74C3C", "#26B99A", "#3498DB"];
 
@@ -6176,12 +6171,13 @@ function init_index_device() {
                 var tbl_tile_info = document.getElementsByClassName("tile_info")[0];
                 var tbody = document.createElement("tbody");
                 i_class_arry = ['fa fa-square blue', 'fa fa-square green', 'fa fa-square purple', 'fa fa-square aero', 'fa fa-square red'];
-                var tr = document.createElement("tr");
+
                 for (i = 0; i < limitTop; i++) {
+                    var tr = document.createElement("tr");
                     var p_tag = document.createElement("p"),
                         i_tag = document.createElement("i");
                     i_tag.setAttribute("class", i_class_arry[i]);
-                    i_tag.innerHTML = labels_data[i];
+                    p_tag.innerHTML = labels_data[i];
                     p_tag.appendChild(i_tag);
 
                     tr.insertCell(0).appendChild(p_tag);
@@ -6190,6 +6186,112 @@ function init_index_device() {
 
                 };
                 tbl_tile_info.replaceChild(tbody, tbl_tile_info.firstElementChild);
+
+            }
+
+        });
+
+
+
+
+
+
+
+    }
+};
+
+function init_index_browsers_usage() {
+    if ((!document.location.pathname.match("audiance_overview.html")) && (!document.location.pathname.match("audiance_overview.html"))) {
+
+
+        function setAttributes(el, attrs) {
+            if (el instanceof HTMLElement)
+                for (var key in attrs) {
+                    el.setAttribute(key, attrs[key]);
+                }
+        };
+
+        function generate_widget_summary(left, progress_val, right) {
+            var progess_percent = Math.round(progress_val * 100);
+            var div = document.createElement("div");
+            var div_widget_summary = div.cloneNode(),
+                div_w_left_w25 = div.cloneNode(),
+                div_w_center_w55 = div.cloneNode(),
+                div_clearfix = div.cloneNode(),
+                div_w_right_w20 = div.cloneNode(),
+                div_progress = div.cloneNode(),
+                div_progress_bar = div.cloneNode(),
+                span = document.createElement("span");
+
+            // set class
+            div_widget_summary.setAttribute("class", "widget_summary");
+            div_w_left_w25.setAttribute("class", "w_left w_25");
+            div_w_center_w55.setAttribute("class", "w_center w_55");
+            div_w_right_w20.setAttribute("class", "w_right w_20");
+            div_clearfix.setAttribute("class", "clearfix");
+
+            // set Attribute for progress and progess bar
+            div_progress.setAttribute("class", "progress");
+            div_progress_bar.setAttribute("class", "progress-bar bg-green");
+            setAttributes(div_progress_bar, {
+                "role": "progress-bar",
+                "aria-valuemin": 0,
+                "aria-valuemax": 100,
+
+            });
+
+
+            // Content
+            //- generate div_w_left_w25
+            var span_content = span.cloneNode();
+            span_content.innerHTML = left;
+            div_w_left_w25.appendChild(span_content);
+
+            //- generate div_w_center_w55
+            //-- content of div_progress_bar
+            div_progress_bar.setAttribute("aria-valuenow", Math.round(progress_val * 100));
+            span_content = span.cloneNode();
+            span_content.setAttribute("class", "sr-only");
+            span_content.innerHTML = Math.round(progress_val * 100) + "% complete";
+            div_progress_bar.appendChild(span_content);
+            div_progress_bar.setAttribute("style", "width:" + Math.round(progress_val * 100) + "%");
+            div_progress.appendChild(div_progress_bar);
+            div_w_center_w55.appendChild(div_progress);
+
+            //- generate div_w_right_w20
+            span_content = span.cloneNode();
+            span_content.innerHTML = Number(right).toLocaleString()
+            div_w_right_w20.appendChild(span_content);
+
+            // Make div_widget_summary
+
+            div_widget_summary.appendChild(div_w_left_w25);
+            div_widget_summary.appendChild(div_w_center_w55);
+            div_widget_summary.appendChild(div_w_right_w20);
+            return div_widget_summary;
+
+
+
+        };
+        $.ajax({
+            type: "GET",
+            url: '/api/report/browsers/',
+            contentType: 'application/json',
+            success: function(data) {
+                // console.log(data);
+                var sortByDe = []
+                var limitTop = 5,
+                    totalViews = 0,
+                    div_widget_summary,
+                    div_browsers_usage = document.getElementById("browsers_usage");
+                data = JSON.parse(data);
+                for (k in data) {
+                    totalViews = totalViews + data[k];
+                }
+                for (k in data) {
+                    div_widget_summary = generate_widget_summary(k, data[k] / totalViews, data[k]);
+                    div_browsers_usage.appendChild(div_widget_summary);
+                }
 
             }
 
@@ -6244,10 +6346,13 @@ $(document).ready(function() {
     init_autocomplete();
     // // new implementation
 
-    init_audiance_timerange_right();
+
     init_index_visitors_location();
-    init_new_test_audiance_overivew();
+
     init_index_device();
+    init_index_browsers_usage();
+    init_audiance_timerange_right();
+    init_new_test_audiance_overivew();
 
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()
