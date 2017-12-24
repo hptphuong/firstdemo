@@ -709,7 +709,7 @@ if __name__ == "__main__":
     # create_draft_user_daily()
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
-    # insert_data_user_daily_report2(path_input1)
+    insert_data_user_daily_report2(path_input1)
     # insert_data_new_user_daily_report2(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
@@ -719,5 +719,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    insert_data_fsa_log_visit_modify(path_input1)
+    # insert_data_fsa_log_visit_modify(path_input1)
     pass

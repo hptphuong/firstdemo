@@ -436,7 +436,7 @@ function plot_fsa_user_chart(array_range_date) {
         x_val2 = [];
 
 
-    if (((location.pathname.match("index.html")) || location.pathname == "/") && Array.isArray(array_range_date[0])) {
+    if (/^\/$|^\/index.html$/.test(location.pathname)) {
 
         m_start = moment(array_range_date[0][0], 'YYYY-MM-DD');
         m_end = moment(array_range_date[0][1], 'YYYY-MM-DD');
@@ -546,7 +546,7 @@ function plot_fsa_new_user_chart(array_range_date) {
         x_val2 = [];
 
 
-    if (location.pathname.match("index.html") && Array.isArray(array_range_date[0])) {
+    if (/^\/$|^\/index.html$/.test(location.pathname)) {
 
         m_start = moment(array_range_date[0][0], 'YYYY-MM-DD');
         m_end = moment(array_range_date[0][1], 'YYYY-MM-DD');
@@ -645,7 +645,7 @@ function plot_fsa_new_user_chart(array_range_date) {
 }
 
 function init_fsa_user_chart() {
-    plot_fsa_user_chart(moment().subtract(6, 'day'), moment());
+    // plot_fsa_user_chart(moment().subtract(6, 'day'), moment());
 }
 
 function init_flot_chart() {
@@ -2166,6 +2166,133 @@ function init_IonRangeSlider() {
 /* DATERANGEPICKER */
 var date_label;
 
+function audiance_overview_plot_two_metric(first_metric, second_metric, timerange) {
+    console.log("audiance_overview_plot_two_metric");
+    console.log(first_metric);
+    console.log(second_metric);
+    console.log(timerange);
+    if ($('#audiance_ov_lineChart').length) {
+
+        var ctx = document.getElementById("audiance_ov_lineChart");
+        var config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    backgroundColor: "rgba(38, 185, 154, 0.31)",
+                    borderColor: "rgba(38, 185, 154, 0.7)",
+                    pointBorderColor: "rgba(38, 185, 154, 0.7)",
+                    pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointBorderWidth: 1,
+                    data: [31, 74, 6, 39, 20, 85, 7]
+                }, {
+                    label: "My Second dataset",
+                    backgroundColor: "rgba(3, 88, 106, 0.3)",
+                    borderColor: "rgba(3, 88, 106, 0.70)",
+                    pointBorderColor: "rgba(3, 88, 106, 0.70)",
+                    pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(151,187,205,1)",
+                    pointBorderWidth: 1,
+                    data: [82, 23, 66, 9, 99, 4, 2]
+                }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    mode: 'label',
+                },
+            },
+        };
+        config = {
+            type: 'line',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    backgroundColor: "rgba(38, 185, 154, 0.31)",
+                    borderColor: "rgba(38, 185, 154, 0.7)",
+                    pointBorderColor: "rgba(38, 185, 154, 0.7)",
+                    pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+                    // pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointBorderWidth: 1,
+                    data: [31, 74, 6, 39, 20, 85, 7],
+
+                }, {
+                    label: "My Second dataset",
+                    backgroundColor: "rgba(3, 88, 106, 0.3)",
+                    borderColor: "rgba(3, 88, 106, 0.70)",
+                    pointBorderColor: "rgba(3, 88, 106, 0.70)",
+                    pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+                    // pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(151,187,205,1)",
+                    pointBorderWidth: 1,
+                    data: [82, 23, 66, 9, 99, 4, 2],
+                    fill: false,
+                    borderDash: [5, 5],
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: false,
+                    text: 'Chart.js Line Chart'
+                },
+                tooltips: {
+                    mode: 'label',
+                },
+                hover: {
+                    mode: 'label'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Month'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Value'
+                        },
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 50,
+                        }
+                    }]
+                }
+            }
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+        config.data.datasets.forEach(function(dataset) {
+            //     // dataset.borderColor = randomColor(0.4);
+            //     // dataset.backgroundColor = randomColor(0.5);
+            //     // dataset.pointBorderColor = randomColor(0.7);
+            //     // dataset.pointBackgroundColor = randomColor(0.5);
+            //     dataset.borderColor = randomColor(0.4);
+            //     dataset.backgroundColor = randomColor(0.5);
+            // dataset.pointBorderColor = randomColor(0.7);
+            // dataset.pointBackgroundColor = randomColor(0.5);
+            //     dataset.pointBorderWidth = 1;
+
+        });
+        var lineChart = new Chart(ctx, config);
+
+    };
+};
+
 function init_audiance_timerange_right() {
     if (typeof($.fn.daterangepicker) === 'undefined') {
         return;
@@ -2175,6 +2302,12 @@ function init_audiance_timerange_right() {
     var cb = function(start, end, label) {
         console.log(start.toISOString(), end.toISOString(), label);
         $('#audiance_timerange_right span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        var first_metric = $('#audiance_vs_metric1')[0].textContent.trim(),
+            second_metric = $('#audiance_vs_metric2')[0].textContent.trim(),
+            timerange = [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')];
+        audiance_overview_plot_two_metric(first_metric, second_metric, timerange);
+
+
         //  
     };
     var optionSet1 = {
@@ -2211,7 +2344,7 @@ function init_audiance_timerange_right() {
         }
     };
 
-    $('#audiance_timerange_right span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+    // $('#audiance_timerange_right span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
     $('#audiance_timerange_right').daterangepicker(optionSet1, cb);
     $('#audiance_timerange_right').on('show.daterangepicker', function() {
         console.log("show event fired");
@@ -2225,7 +2358,7 @@ function init_audiance_timerange_right() {
     $('#audiance_timerange_right').on('cancel.daterangepicker', function(ev, picker) {
         console.log("cancel event fired");
     });
-
+    cb(moment().subtract(6, 'days'), moment());
 
 }
 
@@ -6309,7 +6442,7 @@ $(document).ready(function() {
 
     init_sparklines();
     init_fsa_user_chart();
-    init_fsa_user_chart();
+    // init_fsa_user_chart();
 
     init_flot_chart();
     init_sidebar();
@@ -6322,8 +6455,11 @@ $(document).ready(function() {
     init_ColorPicker();
     init_TagsInput();
     // init_parsley();
-    init_daterangepicker();
-    init_daterangepicker_right();
+    if (/^\/$|^\/index.html$/.test(location.pathname)) {
+        init_daterangepicker();
+        init_daterangepicker_right();
+    }
+
     init_daterangepicker_single_call();
     init_daterangepicker_reservation();
     init_SmartWizard();
