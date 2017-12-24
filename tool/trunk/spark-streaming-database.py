@@ -488,8 +488,9 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    cluster = Cluster(['10.88.113.74'])
+    # cluster = Cluster(['10.88.113.74'])
     # cluster = Cluster(['10.88.96.94'])
+    cluster = Cluster(['127.0.0.1'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -564,14 +565,14 @@ def insert_data_user_daily_report2(source_path):
                 )
             """, consistency_level=ConsistencyLevel.ONE)
         for row in reader:
-            log.info("+----------------------------------------------+row[1]:"+row[1])
-            log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
+            # log.info("+----------------------------------------------+row[1]:"+row[1])
+            # log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
 
             session.execute(
                 query, 
                 dict(
                     bucket=0,
-                    m_date=int(datetime.strptime(row[1],"%Y-%m-%d").replace(tzinfo=utczone).timestamp()), 
+                    m_date=int(row[1]), 
                     users=int(row[2])
                 ))
             pass
@@ -580,7 +581,42 @@ def insert_data_user_daily_report2(source_path):
         log.info("+--------------------------------------------------------+")
     pass
 
+def insert_data_new_user_daily_report2(source_path):
+    with open(source_path, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        session = getSession(KEYSPACE)
+        log.info("+-----------Get session successfully-----------+")
+        log.info("+----------------------------------------------+")
+        log.info("+----------Begin insert data into fsa_site-------+")
+        log.info("+----------------------------------------------+")
+        utczone = tz.gettz('UTC')
+        query = SimpleStatement("""
+            INSERT INTO newuser_daily_report (
+                bucket,
+                m_date, 
+                newusers)
+            VALUES (
+                %(bucket)s,
+                %(m_date)s, 
+                %(newusers)s
+                )
+            """, consistency_level=ConsistencyLevel.ONE)
+        for row in reader:
+            # log.info("+----------------------------------------------+row[1]:"+row[1])
+            # log.info("+----------------------------------------------+str:"+str(datetime.strptime(row[1],"%Y-%m-%d")))
 
+            session.execute(
+                query, 
+                dict(
+                    bucket=1,
+                    m_date=int(row[1]), 
+                    newusers=int(row[2])
+                ))
+            pass
+        log.info("+--------------------------------------------------------+")
+        log.info("+-----Insert data into fsa_site successfully----+")
+        log.info("+--------------------------------------------------------+")
+    pass
 
 
 def insert_data_fsa_log_visit_modify(source_path):
@@ -633,8 +669,8 @@ def insert_data_fsa_log_visit_modify(source_path):
             session.execute(
                 query, 
                 dict(
-                    userid=row[0], 
-                    fsa=row[1],
+                    userid=row[1], 
+                    fsa=row[0],
                     fsid=row[2],
                     m_date=int(row[3]),
                     config_browser=row[4],
@@ -674,6 +710,7 @@ if __name__ == "__main__":
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
     # insert_data_user_daily_report2(path_input1)
+    # insert_data_new_user_daily_report2(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
     # create_user_daily()
