@@ -2166,7 +2166,13 @@ function init_IonRangeSlider() {
 /* DATERANGEPICKER */
 var date_label;
 
-function audiance_overview_plot_two_metric(first_metric, second_metric, timerange) {
+function audiance_overview_plot_two_metric() {
+    var first_metric = $('#audiance_vs_metric1').text().trim(),
+        second_metric = $('#audiance_vs_metric2').text().trim(),
+        timerange = [$('#audiance_timerange_right').data("daterangepicker").startDate.format('YYYY-MM-DD'),
+            $('#audiance_timerange_right').data("daterangepicker").endDate.format('YYYY-MM-DD')
+        ];
+
     console.log("audiance_overview_plot_two_metric");
     console.log(first_metric);
     console.log(second_metric);
@@ -2236,7 +2242,7 @@ function audiance_overview_plot_two_metric(first_metric, second_metric, timerang
                     },
                     ticks: {
                         suggestedMin: 0,
-                        suggestedMax: 50,
+                        suggestedMax: 5,
                     }
                 }]
             }
@@ -2276,14 +2282,87 @@ function audiance_overview_plot_two_metric(first_metric, second_metric, timerang
         default:
 
     };
+
+
+    function callback_receive(firstdata, secondata) {
+        console.log("test");
+    };
+
+    // function generate_week_date(start_date, end_date) {
+    //     if (start_date > end_date) return;
+    //     var i = new Date(start_date.getTime()),
+    //         rlst = [];
+
+    //     while (i <= end_date) {
+    //         if (i == end_date) {
+    //             rlst.push([i, i]);
+    //             break;
+    //         };
+    //         if (Math.round((end_date - i) / (1000 * 60 * 60 * 24)) < 6) {
+
+    //             if ((Math.round((end_date - i) / (1000 * 60 * 60 * 24)) == 1) && i.getDay() == 6) {
+    //                 rlst.push([i, i]);
+    //                 rlst.push([end_date, end_date]);
+    //                 break;
+    //             } else {
+    //                 rlst.push([i, end_date]);
+    //                 break;
+    //             }
+
+    //         };
+    //         rlst.push([new Date(i.getTime()), new Date(i.setDate(i.getDate() + (6 - i.getDay())))]);
+    //         i.setDate(i.getDate() + 1);
+    //     }
+    //     return rlst;
+    // };
+
+
+
+    function generate_week_date(start_date, end_date) {
+        if (start_date > end_date) return;
+        var i = start_date.clone(),
+            rlst = [];
+
+        while (i <= end_date) {
+            if (i == end_date) {
+                rlst.push([i.format("YYYY-MM-DD"), i.format("YYYY-MM-DD")]);
+                break;
+            };
+            if (end_date.diff(i, 'days') < 6) {
+
+                if ((end_date.diff(i, 'days') == 1) && i.day() == 6) {
+                    rlst.push([i.format("YYYY-MM-DD"), i.format("YYYY-MM-DD")]);
+                    rlst.push([end_date.format("YYYY-MM-DD"), end_date.format("YYYY-MM-DD")]);
+                    break;
+                } else {
+                    rlst.push([i.format("YYYY-MM-DD"), end_date.format("YYYY-MM-DD")]);
+                    break;
+                }
+
+            };
+            rlst.push([i.clone().format("YYYY-MM-DD"), i.add(6 - i.day(), 'days').clone().format("YYYY-MM-DD")]);
+            i.add(1, 'days');
+        }
+        return rlst;
+    };
+
+    function create_labels_data(start_date, end_date, labels, data, dimenson) {
+        if (dimenson == "Day") {
+            return [labels, data];
+        }
+        if (dimenson == "Week") {
+
+            week_range = generate_week_date(moment(start_date).format("YYYY-MM-DD"), moment(end_date).format("YYYY-MM-DD"))
+            return week_range;
+        }
+
+    };
+
     var data = JSON.stringify({
         x1_start: timerange.slice(0, 1),
         x1_end: timerange.slice(-1),
     });
 
-    function callback_receive(firstdata, secondata) {
-        console.log("test");
-    };
     if (first_metric) {
         var firstajax = $.ajax({
             type: "POST",
@@ -2295,20 +2374,26 @@ function audiance_overview_plot_two_metric(first_metric, second_metric, timerang
         firstajax.then(function(firstdata) {
             // input label and first chart's data
             firstdata = JSON.parse(firstdata);
-            config.data['labels'] = firstdata['date1'];
-            config.data.datasets[0]['data'] = firstdata['value1'];
+            m_data = JSON.parse(data);
+            labels_data = create_labels_data(m_data.x1_start[0], m_data.x1_end[0], firstdata['date1'], firstdata['value1'], "Week");
+            config.data['labels'] = labels_data[0];
+            config.data.datasets[0]['data'] = labels_data[1];
+            config.data.datasets[0]['label'] = first_metric;
             if (second_metric) {
                 $.ajax({
                     type: "POST",
-                    url: '/api/report/user_daily/',
+                    url: url_metric2,
                     data: data,
                     contentType: 'application/json',
                     success: function(secondata) {
-                        callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+                        secondata = JSON.parse(secondata);
+                        config.data.datasets[1]['data'] = secondata['value1'];
+                        config.data.datasets[1]['label'] = second_metric;
+                        var lineChart = new Chart(ctx, config);
                     }
 
                 });
-                var lineChart = new Chart(ctx, config);
+
             } else {
                 config.data.datasets.splice(1, 1);
                 var lineChart = new Chart(ctx, config);
@@ -2337,7 +2422,7 @@ function init_audiance_timerange_right() {
         var first_metric = $('#audiance_vs_metric1')[0].textContent.trim(),
             second_metric = $('#audiance_vs_metric2')[0].textContent.trim(),
             timerange = [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')];
-        audiance_overview_plot_two_metric(first_metric, second_metric, timerange);
+        audiance_overview_plot_two_metric();
 
 
         //  
@@ -2392,6 +2477,13 @@ function init_audiance_timerange_right() {
     });
     cb(moment().subtract(6, 'days'), moment());
 
+}
+
+function init_audiance_btn_time_dimension() {
+    $('#btn-group-time-dimension').on('click', '.btn', function() {
+        $(this).addClass('btn-primary').siblings().removeClass('btn-primary').addClass('btn-default');
+        audiance_overview_plot_two_metric();
+    });
 }
 
 function init_daterangepicker() {
@@ -6490,6 +6582,9 @@ $(document).ready(function() {
     if (/^\/$|^\/index.html$/.test(location.pathname)) {
         init_daterangepicker();
         init_daterangepicker_right();
+    }
+    if (/^\/audiance_overview.html$/.test(location.pathname)) {
+        init_audiance_btn_time_dimension();
     }
 
     init_daterangepicker_single_call();

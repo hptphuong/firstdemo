@@ -5321,6 +5321,10 @@ background-color: #f8f8f8;
 .m-progress{
     margin-bottom: 0px !important;
 }
+
+.btn-primary {
+  color: #DCD6D6;
+}
 /*.c3-xgrid-line line {
 
     ._GAfb th:nth-child(1),td:nth-child(1) {

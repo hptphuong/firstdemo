@@ -488,9 +488,9 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    cluster = Cluster(['10.88.113.74'])
+    # cluster = Cluster(['10.88.113.74'])
     # cluster = Cluster(['10.88.96.94'])
-    # cluster = Cluster(['127.0.0.1'])
+    cluster = Cluster(['127.0.0.1'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -710,7 +710,7 @@ if __name__ == "__main__":
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
     # insert_data_user_daily_report2(path_input1)
-    # insert_data_new_user_daily_report2(path_input1)
+    insert_data_new_user_daily_report2(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
     # create_user_daily()
@@ -719,5 +719,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    insert_data_fsa_log_visit_modify(path_input1)
+    # insert_data_fsa_log_visit_modify(path_input1)
     pass
