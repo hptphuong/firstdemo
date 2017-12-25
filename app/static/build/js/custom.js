@@ -2171,126 +2171,158 @@ function audiance_overview_plot_two_metric(first_metric, second_metric, timerang
     console.log(first_metric);
     console.log(second_metric);
     console.log(timerange);
-    if ($('#audiance_ov_lineChart').length) {
+    //Create url for every metric
 
-        var ctx = document.getElementById("audiance_ov_lineChart");
-        var config = {
-            type: 'line',
-            data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
-                datasets: [{
-                    label: "My First dataset",
-                    backgroundColor: "rgba(38, 185, 154, 0.31)",
-                    borderColor: "rgba(38, 185, 154, 0.7)",
-                    pointBorderColor: "rgba(38, 185, 154, 0.7)",
-                    pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
-                    pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointBorderWidth: 1,
-                    data: [31, 74, 6, 39, 20, 85, 7]
-                }, {
-                    label: "My Second dataset",
-                    backgroundColor: "rgba(3, 88, 106, 0.3)",
-                    borderColor: "rgba(3, 88, 106, 0.70)",
-                    pointBorderColor: "rgba(3, 88, 106, 0.70)",
-                    pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
-                    pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(151,187,205,1)",
-                    pointBorderWidth: 1,
-                    data: [82, 23, 66, 9, 99, 4, 2]
-                }]
-            },
-            options: {
-                responsive: true,
-                tooltips: {
-                    mode: 'label',
-                },
-            },
-        };
-        config = {
-            type: 'line',
-            data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
-                datasets: [{
-                    label: "My First dataset",
-                    backgroundColor: "rgba(38, 185, 154, 0.31)",
-                    borderColor: "rgba(38, 185, 154, 0.7)",
-                    pointBorderColor: "rgba(38, 185, 154, 0.7)",
-                    pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
-                    // pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointBorderWidth: 1,
-                    data: [31, 74, 6, 39, 20, 85, 7],
 
-                }, {
-                    label: "My Second dataset",
-                    backgroundColor: "rgba(3, 88, 106, 0.3)",
-                    borderColor: "rgba(3, 88, 106, 0.70)",
-                    pointBorderColor: "rgba(3, 88, 106, 0.70)",
-                    pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
-                    // pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(151,187,205,1)",
-                    pointBorderWidth: 1,
-                    data: [82, 23, 66, 9, 99, 4, 2],
-                    fill: false,
-                    borderDash: [5, 5],
-                }]
+
+
+
+    var ctx = document.getElementById("audiance_ov_lineChart");
+
+    var config = {
+        type: 'line',
+        data: {
+            // labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: "My First dataset",
+                backgroundColor: "rgba(38, 185, 154, 0.31)",
+                borderColor: "rgba(38, 185, 154, 0.7)",
+                pointBorderColor: "rgba(38, 185, 154, 0.7)",
+                pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+                // pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointBorderWidth: 1,
+                // data: [31, 74, 6, 39, 20, 85, 7],
+
+            }, {
+                label: "My Second dataset",
+                backgroundColor: "rgba(3, 88, 106, 0.3)",
+                borderColor: "rgba(3, 88, 106, 0.70)",
+                pointBorderColor: "rgba(3, 88, 106, 0.70)",
+                pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+                // pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(151,187,205,1)",
+                pointBorderWidth: 1,
+                // data: [82, 23, 66, 9, 99, 4, 2],
+                fill: false,
+                borderDash: [5, 5],
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: false,
+                text: 'Chart.js Line Chart'
             },
-            options: {
-                responsive: true,
-                title: {
-                    display: false,
-                    text: 'Chart.js Line Chart'
-                },
-                tooltips: {
-                    mode: 'label',
-                },
-                hover: {
-                    mode: 'label'
-                },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            show: true,
-                            labelString: 'Month'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            show: true,
-                            labelString: 'Value'
-                        },
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 50,
-                        }
-                    }]
-                }
+            tooltips: {
+                mode: 'label',
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Value'
+                    },
+                    ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 50,
+                    }
+                }]
             }
-        };
-        var randomColorFactor = function() {
-            return Math.round(Math.random() * 255);
-        };
-        var randomColor = function(opacity) {
-            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
-        };
-        config.data.datasets.forEach(function(dataset) {
-            //     // dataset.borderColor = randomColor(0.4);
-            //     // dataset.backgroundColor = randomColor(0.5);
-            //     // dataset.pointBorderColor = randomColor(0.7);
-            //     // dataset.pointBackgroundColor = randomColor(0.5);
-            //     dataset.borderColor = randomColor(0.4);
-            //     dataset.backgroundColor = randomColor(0.5);
-            // dataset.pointBorderColor = randomColor(0.7);
-            // dataset.pointBackgroundColor = randomColor(0.5);
-            //     dataset.pointBorderWidth = 1;
-
-        });
-        var lineChart = new Chart(ctx, config);
+        }
+    };
+    var url_metric1,
+        url_metric2;
+    switch (first_metric) {
+        case "Users":
+            url_metric1 = 'api/report/user_daily/';
+            break;
+        case "New Users":
+            url_metric1 = 'api/report/new_user_daily/';
+            break;
+        case "Session":
+            url_metric1 = 'api/report/session_daily/';
+            break;
+        case "Session Duration":
+            url_metric1 = 'api/report/session_duration_daily/';
+            break;
+        default:
+            url_metric1 = '';
+    };
+    switch (second_metric) {
+        case "Users":
+            url_metric2 = 'api/report/user_daily/';
+            break;
+        case "New Users":
+            url_metric2 = 'api/report/new_user_daily/';
+            break;
+        case "Session":
+            url_metric2 = 'api/report/session_daily/';
+            break;
+        case "Session Duration":
+            url_metric2 = 'api/report/session_duration_daily/';
+            break;
+        default:
 
     };
+    var data = JSON.stringify({
+        x1_start: timerange.slice(0, 1),
+        x1_end: timerange.slice(-1),
+    });
+
+    function callback_receive(firstdata, secondata) {
+        console.log("test");
+    };
+    if (first_metric) {
+        var firstajax = $.ajax({
+            type: "POST",
+            url: url_metric1,
+            data: data,
+            contentType: 'application/json',
+
+        });
+        firstajax.then(function(firstdata) {
+            // input label and first chart's data
+            firstdata = JSON.parse(firstdata);
+            config.data['labels'] = firstdata['date1'];
+            config.data.datasets[0]['data'] = firstdata['value1'];
+            if (second_metric) {
+                $.ajax({
+                    type: "POST",
+                    url: '/api/report/user_daily/',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function(secondata) {
+                        callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+                    }
+
+                });
+                var lineChart = new Chart(ctx, config);
+            } else {
+                config.data.datasets.splice(1, 1);
+                var lineChart = new Chart(ctx, config);
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 };
 
 function init_audiance_timerange_right() {

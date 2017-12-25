@@ -488,9 +488,9 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    # cluster = Cluster(['10.88.113.74'])
+    cluster = Cluster(['10.88.113.74'])
     # cluster = Cluster(['10.88.96.94'])
-    cluster = Cluster(['127.0.0.1'])
+    # cluster = Cluster(['127.0.0.1'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -676,14 +676,14 @@ def insert_data_fsa_log_visit_modify(source_path):
                     config_browser=row[4],
                     config_browser_version=row[5],
                     config_color_depth=row[6],
-                    config_resolution=row[8],
-                    config_viewport_size=row[9],
-                    location_browser_en=row[10],
-                    location_browser_lan=row[11],
-                    location_country_code=row[12],
-                    location_country_name=row[13],
-                    location_ipv4=row[14],
-                    config_device=row[15]
+                    config_resolution=row[7],
+                    config_viewport_size=row[7],
+                    location_browser_en=row[13],
+                    location_browser_lan=row[14],
+                    location_country_code=row[15],
+                    location_country_name=row[16],
+                    location_ipv4=row[17],
+                    config_device=row[8]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
@@ -709,7 +709,7 @@ if __name__ == "__main__":
     # create_draft_user_daily()
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
-    insert_data_user_daily_report2(path_input1)
+    # insert_data_user_daily_report2(path_input1)
     # insert_data_new_user_daily_report2(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
@@ -719,5 +719,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    # insert_data_fsa_log_visit_modify(path_input1)
+    insert_data_fsa_log_visit_modify(path_input1)
     pass
