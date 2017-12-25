@@ -2594,6 +2594,36 @@ function generate_array_range_date(start, end, label) {
     return m_rslt;
 }
 
+
+// function generate_week_date(start_date,end_date){
+//     if(start_date>end_date) return;
+//     var i= new Date(start_date.getTime()),
+//     rlst=[];
+
+//     while(i<=end_date){
+//         if(i==end_date) {
+//             rlst.push([i,i]);
+//             break;
+//         };      
+//         if(Math.round((end_date-i)/(1000*60*60*24))<6){
+
+//             if((Math.round((end_date-i)/(1000*60*60*24))==1)&& i.getDay()==6){
+//                 rlst.push([i,i]);
+//                 rlst.push([end_date,end_date]);
+//                 break;
+//             }
+//             else{
+//                 rlst.push([i,end_date]);
+//                 break;  
+//             }
+
+//         };
+//         rlst.push([new Date(i.getTime()),new Date(i.setDate(i.getDate()+(6-i.getDay())))]);
+//         i.setDate(i.getDate()+1);
+//     }
+//     return rlst;
+// }
+
 function init_daterangepicker_right() {
 
     if (typeof($.fn.daterangepicker) === 'undefined') {
