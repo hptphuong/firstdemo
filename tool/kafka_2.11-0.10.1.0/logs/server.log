@@ -7154,3 +7154,4 @@ Caused by: java.nio.file.FileSystemException: ..\kafka-logs\test-0\0000000000000
 [2017-12-25 11:41:50,225] INFO [Group Metadata Manager on Broker 0]: Removed 0 expired offsets in 0 milliseconds. (kafka.coordinator.GroupMetadataManager)
 [2017-12-25 11:51:50,260] INFO [Group Metadata Manager on Broker 0]: Removed 0 expired offsets in 0 milliseconds. (kafka.coordinator.GroupMetadataManager)
 [2017-12-25 12:01:50,314] INFO [Group Metadata Manager on Broker 0]: Removed 0 expired offsets in 0 milliseconds. (kafka.coordinator.GroupMetadataManager)
+[2017-12-25 12:11:50,323] INFO [Group Metadata Manager on Broker 0]: Removed 0 expired offsets in 0 milliseconds. (kafka.coordinator.GroupMetadataManager)
