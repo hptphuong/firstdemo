@@ -2293,9 +2293,9 @@ function audiance_overview_plot_two_metric(timerange) {
     };
 
 
-    function callback_receive(firstdata, secondata) {
-        console.log("test");
-    };
+    // function callback_receive(firstdata, secondata) {
+    //     console.log("test");
+    // };
 
     // function generate_week_date(start_date, end_date) {
     //     if (start_date > end_date) return;
@@ -2563,9 +2563,6 @@ function update_count() {
 
 
 
-
-
-
 };
 
 function init_audiance_timerange_right() {
@@ -2650,6 +2647,13 @@ function init_realtime_audiance_overview() {
 
 };
 
+function extract_timerange_frompicker() {
+    var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+    timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
+    timerange[1] = moment(timerange[1], "MMM DD,YYYY").format("YYYY-MM-DD");
+    return timerange;
+};
+
 function init_audiance_btn_time_dimension() {
     $('#btn-group-time-dimension').on('click', '.btn', function() {
         $(this).addClass('btn-primary').siblings().removeClass('btn-primary').addClass('btn-default');
@@ -2659,6 +2663,7 @@ function init_audiance_btn_time_dimension() {
         audiance_overview_plot_two_metric(timerange);
     });
 }
+
 
 function init_daterangepicker() {
 
@@ -6757,14 +6762,23 @@ function init_index_browsers_usage() {
             }
 
         });
-
-
-
-
-
-
-
     }
+};
+
+function init_audiance_dropdown_metric() {
+    var timerange = extract_timerange_frompicker();
+    $("#dropdown-metric1 li").each(function() {
+        $(this).click(function() {
+
+            audiance_overview_plot_two_metric(timerange);
+        });
+    });
+    $("#dropdown-metric2 li").each(function() {
+        $(this).click(function() {
+
+            audiance_overview_plot_two_metric(timerange);
+        });
+    });
 };
 $(document).ready(function() {
 
@@ -6790,7 +6804,8 @@ $(document).ready(function() {
     if (/^\/audiance_overview.html$/.test(location.pathname)) {
         init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
-        init_realtime_audiance_overview();
+        init_audiance_dropdown_metric();
+        // init_realtime_audiance_overview();
 
     }
 
