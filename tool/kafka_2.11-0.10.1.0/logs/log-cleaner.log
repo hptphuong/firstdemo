@@ -190,3 +190,5 @@
 [2017-12-20 08:53:34,357] INFO [kafka-log-cleaner-thread-0], Starting  (kafka.log.LogCleaner)
 [2017-12-21 13:31:21,536] INFO Starting the log cleaner (kafka.log.LogCleaner)
 [2017-12-21 13:31:21,548] INFO [kafka-log-cleaner-thread-0], Starting  (kafka.log.LogCleaner)
+[2017-12-25 09:01:48,998] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2017-12-25 09:01:49,021] INFO [kafka-log-cleaner-thread-0], Starting  (kafka.log.LogCleaner)

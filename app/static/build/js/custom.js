@@ -2166,12 +2166,12 @@ function init_IonRangeSlider() {
 /* DATERANGEPICKER */
 var date_label;
 
-function audiance_overview_plot_two_metric() {
+function audiance_overview_plot_two_metric(timerange) {
     var first_metric = $('#audiance_vs_metric1').text().trim(),
-        second_metric = $('#audiance_vs_metric2').text().trim(),
-        timerange = [$('#audiance_timerange_right').data("daterangepicker").startDate.format('YYYY-MM-DD'),
-            $('#audiance_timerange_right').data("daterangepicker").endDate.format('YYYY-MM-DD')
-        ];
+        second_metric = $('#audiance_vs_metric2').text().trim();
+    // timerange = [$('#audiance_timerange_right').data("daterangepicker").startDate.format('YYYY-MM-DD'),
+    //     $('#audiance_timerange_right').data("daterangepicker").endDate.format('YYYY-MM-DD')
+    // ];
 
     console.log("audiance_overview_plot_two_metric");
     console.log(first_metric);
@@ -2181,9 +2181,14 @@ function audiance_overview_plot_two_metric() {
 
 
 
-
+    $('#audiance_ov_lineChart').remove(); // this is my <canvas> element
+    $('#chart_container').append('<canvas id="audiance_ov_lineChart" height="207" width="416" style="width: 379px; height: 189px;"></canvas>');
 
     var ctx = document.getElementById("audiance_ov_lineChart");
+
+
+
+
 
     var config = {
         type: 'line',
@@ -2227,6 +2232,7 @@ function audiance_overview_plot_two_metric() {
                 mode: 'label'
             },
             scales: {
+
                 xAxes: [{
                     display: true,
                     scaleLabel: {
@@ -2248,6 +2254,9 @@ function audiance_overview_plot_two_metric() {
             }
         }
     };
+    // Clear old chart
+
+
     var url_metric1,
         url_metric2;
     switch (first_metric) {
@@ -2346,21 +2355,82 @@ function audiance_overview_plot_two_metric() {
         return rlst;
     };
 
+    function generate_month_date(start_date, end_date) {
+
+        function isLastDayOfMonth(momenDate) {
+            nextday = momenDate.clone().add(1, 'days');
+            return nextday.format("MM") != momenDate.format("MM");
+        };
+        if (start_date > end_date) return;
+        var i = start_date.clone(),
+            rlst = [];
+        while (i <= end_date) {
+            if (i.format("MM") == end_date.format("MM")) {
+                rlst.push([i.format("YYYY-MM-DD"), end_date.format("YYYY-MM-DD")]);
+                break;
+            };
+            if (isLastDayOfMonth(i)) {
+                rlst.push([i.format("YYYY-MM-DD"), i.format("YYYY-MM-DD")]);
+                i.add(1, 'days');
+            } else {
+                var lastdayofmonth = new Date(i.format("YYYY"), parseInt(i.format("MM")), 0);
+                rlst.push([i.format("YYYY-MM-DD"), moment(lastdayofmonth).format("YYYY-MM-DD")]);
+                i = moment(lastdayofmonth).add(1, 'days');
+            };
+
+
+        };
+
+
+        return rlst;
+    };
+
     function create_labels_data(start_date, end_date, labels, data, dimenson) {
         if (dimenson == "Day") {
             return [labels, data];
-        }
+        };
         if (dimenson == "Week") {
+            var start_date = moment(start_date),
+                end_date = moment(end_date);
+            week_range = generate_week_date(start_date, end_date)
+            var week_value = [];
+            var week_label = [];
+            for (var j = 0; j < week_range.length; j++) {
+                week_value[j] = 0;
+                week_label[j] = moment(week_range[j][0]).format("MMM DD, YYYY") + "-" + moment(week_range[j][1]).format("MMM DD, YYYY");
+                for (var m = moment(week_range[j][0]); m.diff(week_range[j][1], 'days') <= 0; m.add(1, 'days')) {
+                    console.log();
+                    if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) week_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
 
-            week_range = generate_week_date(moment(start_date).format("YYYY-MM-DD"), moment(end_date).format("YYYY-MM-DD"))
-            return week_range;
-        }
+                }
+            };
+            return [week_label, week_value];
+        };
+        if (dimenson == "Month") {
+            var start_date = moment(start_date),
+                end_date = moment(end_date);
+            week_range = generate_month_date(start_date, end_date)
+            var month_value = [];
+            var month_label = [];
+            for (var j = 0; j < week_range.length; j++) {
+                month_value[j] = 0;
+                month_label[j] = moment(week_range[j][0]).format("MMM YYYY");
+                for (var m = moment(week_range[j][0]); m.diff(week_range[j][1], 'days') <= 0; m.add(1, 'days')) {
+                    console.log(m.format());
+                    if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) month_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
+
+                }
+            };
+            return [month_label, month_value];
+        };
 
     };
-
+    var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+    timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
+    timerange[1] = moment(timerange[1], "MMM DD,YYYY").format("YYYY-MM-DD");
     var data = JSON.stringify({
-        x1_start: timerange.slice(0, 1),
-        x1_end: timerange.slice(-1),
+        x1_start: [timerange[0]],
+        x1_end: [timerange[1]]
     });
 
     if (first_metric) {
@@ -2375,7 +2445,8 @@ function audiance_overview_plot_two_metric() {
             // input label and first chart's data
             firstdata = JSON.parse(firstdata);
             m_data = JSON.parse(data);
-            labels_data = create_labels_data(m_data.x1_start[0], m_data.x1_end[0], firstdata['date1'], firstdata['value1'], "Week");
+            var dimenson = $("#btn-group-time-dimension .btn-primary").text();
+            labels_data = create_labels_data(m_data.x1_start[0], m_data.x1_end[0], firstdata['date1'], firstdata['value1'], dimenson); // frist element for labels, second for data
             config.data['labels'] = labels_data[0];
             config.data.datasets[0]['data'] = labels_data[1];
             config.data.datasets[0]['label'] = first_metric;
@@ -2387,7 +2458,9 @@ function audiance_overview_plot_two_metric() {
                     contentType: 'application/json',
                     success: function(secondata) {
                         secondata = JSON.parse(secondata);
-                        config.data.datasets[1]['data'] = secondata['value1'];
+                        var dimenson = $("#btn-group-time-dimension .btn-primary").text();
+                        second_labels_data = create_labels_data(m_data.x1_start[0], m_data.x1_end[0], secondata['date1'], secondata['value1'], dimenson);
+                        config.data.datasets[1]['data'] = second_labels_data[1];
                         config.data.datasets[1]['label'] = second_metric;
                         var lineChart = new Chart(ctx, config);
                     }
@@ -2409,6 +2482,91 @@ function audiance_overview_plot_two_metric() {
 
 
 };
+var prev_returning_user,
+    prev_new_user;
+
+function update_count() {
+    var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+    timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
+    timerange[1] = moment(timerange[1], "MMM DD,YYYY").format("YYYY-MM-DD");
+    var data = JSON.stringify({
+        x1_start: [timerange[0]],
+        x1_end: [timerange[1]]
+    });
+
+    var m_user = $.ajax({
+            type: "POST",
+            url: "api/report/user_daily/",
+            data: data,
+            contentType: 'application/json'
+        }),
+        m_new_user = $.ajax({
+            type: "POST",
+            url: "/api/report/new_user_daily/",
+            data: data,
+            contentType: 'application/json'
+        }),
+        m_pageview = $.ajax({
+            type: "POST",
+            url: "api/report/pageviews/",
+            data: data,
+            contentType: 'application/json'
+        });
+    $.when(m_user, m_new_user, m_pageview).done(function(r1, r2, r3) {
+        r1 = JSON.parse(r1[0]);
+        r2 = JSON.parse(r2[0]);
+        r3 = JSON.parse(r3[0]);
+        sum_user = r1['value1'].reduce((a, b) => a + b, 0);
+        sum_new_user = r2['value1'].reduce((a, b) => a + b, 0);
+        var sum_pageviews = 0;
+        for (var index = 0; index < r3.value1.length; index++) {
+            sum_pageviews += r3.value1[index][1];
+        };
+        console.log(sum_user);
+        console.log(sum_new_user);
+        document.getElementById("count_user").innerHTML = sum_user;
+        document.getElementById("count_new_user").innerHTML = sum_new_user;
+        document.getElementById("count_pageviews").innerHTML = sum_pageviews;
+        sum_returning_user = sum_user - sum_new_user;
+
+        if (sum_new_user != prev_new_user) {
+            prev_new_user = sum_new_user;
+            if ($('#pieChart_newuser_returnuser').length) {
+
+                var ctx = document.getElementById("pieChart_newuser_returnuser");
+                var data = {
+                    datasets: [{
+                        data: [sum_new_user, sum_user],
+                        backgroundColor: [
+                            "#26B99A",
+                            "#3498DB"
+
+                        ],
+                        label: 'My dataset' // for legend
+                    }],
+                    labels: [
+                        "New visitor",
+                        "Returning visitor"
+                    ]
+                };
+
+                var pieChart = new Chart(ctx, {
+                    data: data,
+                    type: 'pie',
+
+                });
+
+            };
+        }
+
+    });
+
+
+
+
+
+
+};
 
 function init_audiance_timerange_right() {
     if (typeof($.fn.daterangepicker) === 'undefined') {
@@ -2422,7 +2580,8 @@ function init_audiance_timerange_right() {
         var first_metric = $('#audiance_vs_metric1')[0].textContent.trim(),
             second_metric = $('#audiance_vs_metric2')[0].textContent.trim(),
             timerange = [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')];
-        audiance_overview_plot_two_metric();
+        audiance_overview_plot_two_metric(timerange);
+        update_count();
 
 
         //  
@@ -2433,7 +2592,7 @@ function init_audiance_timerange_right() {
         minDate: '01/01/2012',
         maxDate: moment().format('MM/DD/YYYY'),
         dateLimit: {
-            days: 60
+            days: 75
         },
         showDropdowns: true,
         showWeekNumbers: true,
@@ -2479,10 +2638,25 @@ function init_audiance_timerange_right() {
 
 }
 
+function init_realtime_audiance_overview() {
+    setInterval(function() {
+        var timerange = [$("#audiance_timerange_right").data("daterangepicker").startDate.format('YYYY-MM-DD'),
+            $("#audiance_timerange_right").data("daterangepicker").endDate.format('YYYY-MM-DD')
+        ];
+
+        // audiance_overview_plot_two_metric(timerange);
+        update_count();
+    }, 2000);
+
+};
+
 function init_audiance_btn_time_dimension() {
     $('#btn-group-time-dimension').on('click', '.btn', function() {
         $(this).addClass('btn-primary').siblings().removeClass('btn-primary').addClass('btn-default');
-        audiance_overview_plot_two_metric();
+        var timerange = [$("#audiance_timerange_right").data("daterangepicker").startDate.format('YYYY-MM-DD'),
+            $("#audiance_timerange_right").data("daterangepicker").endDate.format('YYYY-MM-DD')
+        ];
+        audiance_overview_plot_two_metric(timerange);
     });
 }
 
@@ -6614,7 +6788,10 @@ $(document).ready(function() {
         init_daterangepicker_right();
     }
     if (/^\/audiance_overview.html$/.test(location.pathname)) {
+        init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
+        init_realtime_audiance_overview();
+
     }
 
     init_daterangepicker_single_call();
@@ -6644,7 +6821,7 @@ $(document).ready(function() {
 
     init_index_device();
     init_index_browsers_usage();
-    init_audiance_timerange_right();
+
     init_new_test_audiance_overivew();
 
     // $('#reportrange_right.pull-right').click();

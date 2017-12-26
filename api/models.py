@@ -61,6 +61,7 @@ class fsa_log_visit(Model):
     fsid =columns.Text(primary_key=True)
     m_date=columns.BigInt(primary_key=True)
     idsite =columns.Text()
+    location_path=columns.Text()
     location_ipv4=columns.Text()
     location_ipv6 =columns.Text()
     location_browser_lan=columns.Text()
@@ -77,6 +78,7 @@ class fsa_log_visit(Model):
     config_java =columns.Text()
     referal_xxx =columns.Text()
 
+
 class location_report(Model):
     bucket=columns.Integer(primary_key=True)
     location_count=columns.Integer()
@@ -90,6 +92,13 @@ class browser_report(Model):
     bucket=columns.Integer(primary_key=True) # 4
     browser_count=columns.Integer()
     config_browser=columns.Text(primary_key=True)
+
+class page_view_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True)
+    location_path=columns.Text(primary_key=True)
+    count=columns.Integer()
+
     
 
 

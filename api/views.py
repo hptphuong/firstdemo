@@ -7,7 +7,8 @@ from api.models import (
     newuser_daily_report,
     location_report,
     device_report,
-    browser_report
+    browser_report,
+    page_view_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -270,6 +271,35 @@ def browsersReportList(request):
 		for row in range(0,len(query_rslt_all)):
 			logger.warn(str(row))
 			m_response[query_rslt_all[row]['config_browser']]=(query_rslt_all[row]['browser_count'])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+@csrf_exempt
+def pageviewsReportList(request):
+	if request.method == 'POST':
+		logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList:")
+		data = JSONParser().parse(request)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		# first range
+
+		if(x1_start & x1_end):
+			logger.warn(">>>> x1_start & x1_end")
+			m_response['date1']=[]
+			m_response['value1']=[]
+			query_rslt = (
+				page_view_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+			for i in range(0,len(query_rslt)):
+				timestamp_date=datetime.fromtimestamp(query_rslt[i]['m_date']) # it will be asigned at localtimezone, not right, need to convert to utc
+				timestamp_date_utc=timestamp_date.astimezone(utczone).date()
+				m_response['date1'].append(str(timestamp_date_utc))
+				m_response['value1'].append([query_rslt[i]['location_path'],query_rslt[i]['count']])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
 

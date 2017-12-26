@@ -488,9 +488,9 @@ def insert_data_fsa_log_visit(source_path):
     pass
 
 def getSession(keySpaceName):
-    # cluster = Cluster(['10.88.113.74'])
+    cluster = Cluster(['10.88.113.74'])
     # cluster = Cluster(['10.88.96.94'])
-    cluster = Cluster(['127.0.0.1'])
+    # cluster = Cluster(['127.0.0.1'])
     session = cluster.connect()
     log.info("+------------------------------------------------------+")
     log.info("+-------------------creating keyspace------------------+")
@@ -644,7 +644,8 @@ def insert_data_fsa_log_visit_modify(source_path):
             location_country_code,
             location_country_name, 
             location_ipv4,
-            config_device
+            config_device,
+            location_path
                 )
             VALUES (
                 %(userid)s, 
@@ -661,7 +662,8 @@ def insert_data_fsa_log_visit_modify(source_path):
                 %(location_country_code)s,
                 %(location_country_name)s,
                 %(location_ipv4)s,
-                %(config_device)s
+                %(config_device)s,
+                %(location_path)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
         for row in reader:
@@ -683,7 +685,8 @@ def insert_data_fsa_log_visit_modify(source_path):
                     location_country_code=row[15],
                     location_country_name=row[16],
                     location_ipv4=row[17],
-                    config_device=row[8]
+                    config_device=row[8],
+                    location_path=row[18]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
@@ -710,7 +713,7 @@ if __name__ == "__main__":
     # insert_data_draft_user_daily(path_input1)
     # insert_data_draft_user_daily_report(path_input1)
     # insert_data_user_daily_report2(path_input1)
-    insert_data_new_user_daily_report2(path_input1)
+    # insert_data_new_user_daily_report2(path_input1)
     # create_fsa_log_visit()
     # insert_data_fsa_log_visit(path_input3)
     # create_user_daily()
@@ -719,5 +722,5 @@ if __name__ == "__main__":
     # create_user_daily_report()
     # create_new_user_daily_report()
     # getSession(KEYSPACE)
-    # insert_data_fsa_log_visit_modify(path_input1)
+    insert_data_fsa_log_visit_modify(path_input1)
     pass

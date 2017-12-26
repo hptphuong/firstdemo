@@ -1,6 +1,9 @@
 (function() {
     // version: 0.2 
     // version: 0.3 -- update os
+    // update current path
+    // update path directly
+    // debug delay
     var O = window,
         M = document,
         m_loccation = M.location;;
@@ -60,6 +63,8 @@
         url = encodeURIComponent("https://phuonganalytic.herokuapp.com"),
             title = encodeURIComponent(M.title),
             ref = encodeURIComponent(M.referrer);
+        console.log("tailurl send:" + tailUrl);
+        console.log("time:" + Date());
         img.src = m_src + tailUrl;
     }
 
@@ -573,7 +578,12 @@
         tailUrl = tailUrl + "&_fsid=" + a.get("_fsid");
         tailUrl = tailUrl + "&cid=" + a.get("clientID");
         tailUrl = tailUrl + "&tid=" + a.get("trackingId");
-        tailUrl = tailUrl + "&dl=" + a.get("location"); // Add location -dl
+        //update current location
+        var m_path = m_loccation.pathname || "";
+        "/" != m_path.charAt(0) && (m_path = "/" + m_path);
+        a.set("location", m_loccation.protocol + "//" + m_loccation.hostname + m_path + m_loccation.search);
+
+        tailUrl = tailUrl + "&dl=" + a.get("location") // Add location -dl
         tailUrl = tailUrl + "&ul=" + a.get("language");
         tailUrl = tailUrl + "&de=" + a.get("encoding");
         tailUrl = tailUrl + "&dt=" + a.get("title");
