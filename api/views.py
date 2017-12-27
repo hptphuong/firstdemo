@@ -227,21 +227,21 @@ def newuserDailyReportList(request):
 	# Request for
 @csrf_exempt
 def locationReportList(request):
-	# if request.method == 'GET':
-	# 	logger.warn(">>>>>>>>>>>>> post request for location:")
-	# 	m_response={}
-	# 	query_rslt_all=(
-	# 		location_report
-	# 			.objects().all()
-	# 		)
-	# 	m_response['byCode']={}
-	# 	m_response['byName']={}
-	# 	for row in range(0,len(query_rslt_all)):
-	# 		m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
+	if request.method == 'GET':
+		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		m_response={}
+		query_rslt_all=(
+			location_report
+				.objects().all()
+			)
+		m_response['header']=['location_country_code','location_count','location_country_name']
+		m_response['value']=[]
+		for row in range(0,len(query_rslt_all)):
+			# m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
 			
-	# 		m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
-
-	# 	return JsonResponse(json.dumps(m_response), status=201, safe=False)
+			# m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
+			m_response['value'].append([ query_rslt_all[row]['location_country_code'],query_rslt_all[row]['location_count'],query_rslt_all[row]['location_country_name']])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		logger.warn(">>>>>>>>>>>>> post request for location:")
 		m_response={}

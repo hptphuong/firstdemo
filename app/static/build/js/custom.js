@@ -6520,7 +6520,12 @@ function addRowHandlers() {
                                 var cell = row.getElementsByTagName("td")[0];
 
                                 if (cell.textContent == "Country") {
-                                    console.log()
+                                    for(var ival=0;ival<data.value.length;ival++){
+                                    msum += data['value'][ival][1];
+                                    };
+                                    for(var ival=0;ival<data.value.length;ival++){
+                                        table_data.push([]);
+                                    };
 
                                 } else {
                                     for (i in data) {
@@ -6918,7 +6923,7 @@ $(document).ready(function() {
         init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
         init_audiance_dropdown_metric();
-        init_realtime_audiance_overview();
+        // init_realtime_audiance_overview();
 
     }
 
