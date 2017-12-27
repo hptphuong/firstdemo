@@ -8,7 +8,8 @@ from api.models import (
     location_report,
     device_report,
     browser_report,
-    page_view_report
+    page_view_report,
+    browser_language_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -226,6 +227,21 @@ def newuserDailyReportList(request):
 	# Request for
 @csrf_exempt
 def locationReportList(request):
+	# if request.method == 'GET':
+	# 	logger.warn(">>>>>>>>>>>>> post request for location:")
+	# 	m_response={}
+	# 	query_rslt_all=(
+	# 		location_report
+	# 			.objects().all()
+	# 		)
+	# 	m_response['byCode']={}
+	# 	m_response['byName']={}
+	# 	for row in range(0,len(query_rslt_all)):
+	# 		m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
+			
+	# 		m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
+
+	# 	return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		logger.warn(">>>>>>>>>>>>> post request for location:")
 		m_response={}
@@ -279,12 +295,14 @@ def pageviewsReportList(request):
 	if request.method == 'POST':
 		logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList:")
 		data = JSONParser().parse(request)
+		
+		logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
 		m_response={}
 		# first range
-
+		logger.warn(">>>>>>>>>>>>> data['x1_start']:"+str(x1_start))
 		if(x1_start & x1_end):
 			logger.warn(">>>> x1_start & x1_end")
 			m_response['date1']=[]
@@ -302,5 +320,18 @@ def pageviewsReportList(request):
 				m_response['value1'].append([query_rslt[i]['location_path'],query_rslt[i]['count']])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
-
+@csrf_exempt
+def browsersLanReportList(request):
+	if request.method == 'GET':
+		logger.warn(">>>>>>>>>>>>> GET request for browsersLanReportList:")
+		m_response={}
+		query_rslt_all=(
+			browser_language_report
+				.objects().all()
+			)
+		for row in range(0,len(query_rslt_all)):
+			logger.warn(str(row))
+			m_response[query_rslt_all[row]['browser_language']]=(query_rslt_all[row]['count'])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
 

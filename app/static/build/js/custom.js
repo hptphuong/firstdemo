@@ -2259,71 +2259,35 @@ function audiance_overview_plot_two_metric(timerange) {
 
     var url_metric1,
         url_metric2;
-    switch (first_metric) {
-        case "Users":
-            url_metric1 = 'api/report/user_daily/';
-            break;
-        case "New Users":
-            url_metric1 = 'api/report/new_user_daily/';
-            break;
-        case "Session":
-            url_metric1 = 'api/report/session_daily/';
-            break;
-        case "Session Duration":
-            url_metric1 = 'api/report/session_duration_daily/';
-            break;
-        default:
-            url_metric1 = '';
+
+    function parsemetric(metric) {
+        var url_metric;
+        switch (metric) {
+            case "Users":
+                url_metric = 'api/report/user_daily/';
+                break;
+            case "New Users":
+                url_metric = 'api/report/new_user_daily/';
+                break;
+            case "Session":
+                url_metric = 'api/report/session_daily/';
+                break;
+            case "Session Duration":
+                url_metric = 'api/report/session_duration_daily/';
+                break;
+            case "Pageviews":
+                url_metric = 'api/report/pageviews/';
+                break;
+            default:
+                url_metric = '';
+        };
+        return url_metric;
     };
-    switch (second_metric) {
-        case "Users":
-            url_metric2 = 'api/report/user_daily/';
-            break;
-        case "New Users":
-            url_metric2 = 'api/report/new_user_daily/';
-            break;
-        case "Session":
-            url_metric2 = 'api/report/session_daily/';
-            break;
-        case "Session Duration":
-            url_metric2 = 'api/report/session_duration_daily/';
-            break;
-        default:
-
-    };
+    url_metric1 = parsemetric(first_metric);
+    url_metric2 = parsemetric(second_metric);
 
 
-    // function callback_receive(firstdata, secondata) {
-    //     console.log("test");
-    // };
 
-    // function generate_week_date(start_date, end_date) {
-    //     if (start_date > end_date) return;
-    //     var i = new Date(start_date.getTime()),
-    //         rlst = [];
-
-    //     while (i <= end_date) {
-    //         if (i == end_date) {
-    //             rlst.push([i, i]);
-    //             break;
-    //         };
-    //         if (Math.round((end_date - i) / (1000 * 60 * 60 * 24)) < 6) {
-
-    //             if ((Math.round((end_date - i) / (1000 * 60 * 60 * 24)) == 1) && i.getDay() == 6) {
-    //                 rlst.push([i, i]);
-    //                 rlst.push([end_date, end_date]);
-    //                 break;
-    //             } else {
-    //                 rlst.push([i, end_date]);
-    //                 break;
-    //             }
-
-    //         };
-    //         rlst.push([new Date(i.getTime()), new Date(i.setDate(i.getDate() + (6 - i.getDay())))]);
-    //         i.setDate(i.getDate() + 1);
-    //     }
-    //     return rlst;
-    // };
 
 
 
@@ -2386,8 +2350,43 @@ function audiance_overview_plot_two_metric(timerange) {
     };
 
     function create_labels_data(start_date, end_date, labels, data, dimenson) {
+        function getAllIndexes(arr, val) {
+            var indexes = [],
+                i = -1;
+            while ((i = arr.indexOf(val, i + 1)) != -1) {
+                indexes.push(i);
+            }
+            return indexes;
+        };
         if (dimenson == "Day") {
-            return [labels, data];
+            var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+            var m_start = moment(timerange[0]),
+                m_end = moment(timerange[1]),
+                m_labels = [],
+                m_data = [];
+            // sum_user = r1['value1'].reduce((a, b) => a + b, 0);
+
+            for (var m = m_start; m.diff(m_end, 'days') <= 0; m.add(1, 'days')) {
+                var tmp = 0;
+                m_labels.push(m.format("YYYY-MM-DD"));
+
+                m_position_in_labels = getAllIndexes(labels, m.format("YYYY-MM-DD"));
+                if (m_position_in_labels.length > 0) {
+
+                    for (var mi = 0; mi < m_position_in_labels.length; mi++) {
+                        tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+                    }
+
+                } else tmp = 0;
+                // if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) {
+                //     if (data[labels.indexOf(m.format("YYYY-MM-DD"))].length > 1) {
+                //         tmp = data[labels.indexOf(m.format("YYYY-MM-DD"))].slice(-1)[0];
+                //     } else tmp = data[labels.indexOf(m.format("YYYY-MM-DD"))];
+                // } else tmp = 0;
+                // tmp = ?  : 0;
+                m_data.push(tmp)
+            }
+            return [m_labels, m_data];
         };
         if (dimenson == "Week") {
             var start_date = moment(start_date),
@@ -2400,7 +2399,28 @@ function audiance_overview_plot_two_metric(timerange) {
                 week_label[j] = moment(week_range[j][0]).format("MMM DD, YYYY") + "-" + moment(week_range[j][1]).format("MMM DD, YYYY");
                 for (var m = moment(week_range[j][0]); m.diff(week_range[j][1], 'days') <= 0; m.add(1, 'days')) {
                     console.log();
-                    if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) week_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
+
+                    // if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) week_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
+
+                    // if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) {
+                    //     if (data[labels.indexOf(m.format("YYYY-MM-DD"))].length > 1) {
+                    //         week_value[j] = data[labels.indexOf(m.format("YYYY-MM-DD"))].slice(-1)[0];
+                    //     } else week_value[j] = data[labels.indexOf(m.format("YYYY-MM-DD"))];
+                    // } else week_value[j] = 0;
+
+                    var tmp = 0;
+                    // m_labels.push(m.format("YYYY-MM-DD"));
+
+                    m_position_in_labels = getAllIndexes(labels, m.format("YYYY-MM-DD"));
+                    if (m_position_in_labels.length > 0) {
+
+                        for (var mi = 0; mi < m_position_in_labels.length; mi++) {
+                            tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+                        }
+
+                    } else tmp = 0;
+                    week_value[j] = tmp;
+
 
                 }
             };
@@ -2416,13 +2436,33 @@ function audiance_overview_plot_two_metric(timerange) {
                 month_value[j] = 0;
                 month_label[j] = moment(week_range[j][0]).format("MMM YYYY");
                 for (var m = moment(week_range[j][0]); m.diff(week_range[j][1], 'days') <= 0; m.add(1, 'days')) {
-                    console.log(m.format());
-                    if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) month_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
+                    // console.log(m.format());
+                    // // if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) month_value[j] += data[labels.indexOf(m.format("YYYY-MM-DD"))];
 
+                    // if (labels.indexOf(m.format("YYYY-MM-DD")) != -1) {
+                    //     if (data[labels.indexOf(m.format("YYYY-MM-DD"))].length > 1) {
+                    //         month_value[j] = data[labels.indexOf(m.format("YYYY-MM-DD"))].slice(-1)[0];
+                    //     } else month_value[j] = data[labels.indexOf(m.format("YYYY-MM-DD"))];
+                    // } else month_value[j] = 0;
+
+
+                    var tmp = 0;
+                    // m_labels.push(m.format("YYYY-MM-DD"));
+
+                    m_position_in_labels = getAllIndexes(labels, m.format("YYYY-MM-DD"));
+                    if (m_position_in_labels.length > 0) {
+
+                        for (var mi = 0; mi < m_position_in_labels.length; mi++) {
+                            tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+                        }
+
+                    } else tmp = 0;
+                    month_value[j] = tmp;
                 }
             };
             return [month_label, month_value];
         };
+
 
     };
     var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
@@ -2432,6 +2472,7 @@ function audiance_overview_plot_two_metric(timerange) {
         x1_start: [timerange[0]],
         x1_end: [timerange[1]]
     });
+
 
     if (first_metric) {
         var firstajax = $.ajax({
@@ -2460,9 +2501,25 @@ function audiance_overview_plot_two_metric(timerange) {
                         secondata = JSON.parse(secondata);
                         var dimenson = $("#btn-group-time-dimension .btn-primary").text();
                         second_labels_data = create_labels_data(m_data.x1_start[0], m_data.x1_end[0], secondata['date1'], secondata['value1'], dimenson);
-                        config.data.datasets[1]['data'] = second_labels_data[1];
+
                         config.data.datasets[1]['label'] = second_metric;
+
+                        config.data.datasets[1]['data'] = second_labels_data[1];
+
+
                         var lineChart = new Chart(ctx, config);
+                        // check exist realtime
+                        // if (('audiance_overview_plot_two_metric' in pool_interval) && pool_interval.audiance_overview_plot_two_metric != -1) {
+                        //     clearInterval(pool_interval.audiance_overview_plot_two_metric);
+                        // };
+                        // //check to update realtime
+                        // if (moment($('#audiance_timerange_right')[0].textContent.trim().split("-")[1].trim()) == moment().format("YYYY-MM-DD")) {
+                        //     pool_interval['audiance_overview_plot_two_metric'] = setInterval(, 1000);
+                        // } else {
+                        //     pool_interval['audiance_overview_plot_two_metric'] = -1;
+                        // }
+
+
                     }
 
                 });
@@ -2474,14 +2531,9 @@ function audiance_overview_plot_two_metric(timerange) {
         });
     }
 
-
-
-
-
-
-
-
 };
+
+var pool_interval = {};
 var prev_returning_user,
     prev_new_user;
 
@@ -2536,17 +2588,16 @@ function update_count() {
                 var ctx = document.getElementById("pieChart_newuser_returnuser");
                 var data = {
                     datasets: [{
-                        data: [sum_new_user, sum_user],
+                        data: [sum_new_user, sum_user - sum_new_user],
                         backgroundColor: [
                             "#26B99A",
                             "#3498DB"
-
                         ],
                         label: 'My dataset' // for legend
                     }],
                     labels: [
-                        "New visitor",
-                        "Returning visitor"
+                        "New users",
+                        "Returning users accross day"
                     ]
                 };
 
@@ -2643,7 +2694,7 @@ function init_realtime_audiance_overview() {
 
         // audiance_overview_plot_two_metric(timerange);
         update_count();
-    }, 2000);
+    }, 300);
 
 };
 
@@ -6423,7 +6474,8 @@ function addRowHandlers() {
     var rows = table.getElementsByTagName("tr");
     table_header_list = {
         'Language': ['Language', 'Users', '%Users'],
-        'Country': ['Country', 'Users', '%Users']
+        'Country': ['Country', 'Users', '%Users'],
+        'Browser': ['Browser', 'Users', '%Users']
     };
     table_data_sample = [
         ['en-us', 16707, 0.5564],
@@ -6436,10 +6488,64 @@ function addRowHandlers() {
         var createClickHandler =
             function(row) {
                 return function() {
-                    var cell = row.getElementsByTagName("td")[0];
-                    table_header = table_header_list[cell.textContent];
-                    table_data = table_data_sample;
-                    audiance_overivew_explore_table(table_header, table_data);
+
+                    // get data
+                    // -- geturi
+                    var metric = row.textContent.trim();
+                    var uri;
+                    switch (metric) {
+
+                        case "Language":
+                            uri = "api/report/browsers_lan/";
+                            break;
+                        case "Browser":
+                            uri = "api/report/browsers/";
+                            break;
+                        case "Country":
+                            uri = "api/report/location/";
+                            break;
+                        default:
+                            uri = "";
+                    };
+                    if (uri) {
+
+                        $.ajax({
+                            type: "GET",
+                            url: uri,
+                            contentType: 'application/json',
+                            success: function(data) {
+                                data = JSON.parse(data);
+                                var msum = 0,
+                                    table_data = [];
+                                var cell = row.getElementsByTagName("td")[0];
+
+                                if (cell.textContent == "Country") {
+                                    console.log()
+
+                                } else {
+                                    for (i in data) {
+                                        msum += data[i];
+                                    };
+
+                                    for (i in data) {
+                                        table_data.push([i, data[i], data[i] / msum]);
+                                    };
+                                    // var cell = row.getElementsByTagName("td")[0];
+
+                                    table_header = table_header_list[cell.textContent];
+                                    // table_data = table_data_sample;
+                                    audiance_overivew_explore_table(table_header, table_data);
+                                }
+
+                            }
+                        });
+
+                    };
+                    // var cell = row.getElementsByTagName("td")[0];
+
+                    // table_header = table_header_list[cell.textContent];
+                    // // table_data = table_data_sample;
+                    // audiance_overivew_explore_table(table_header, table_data);
                 };
             };
 
@@ -6498,10 +6604,12 @@ function init_index_visitors_location() {
 
                 // // // Make list of top limit countries
                 $('.line_30').
-                text(Number(data['totalViews']).toLocaleString() + " Views from " + String(data['totalCountry']) + " countries");
+                text(Number(data['totalViews']).toLocaleString() + " Users from " + String(data['totalCountry']) + " countries");
 
                 var tbl_visitor_list = document.getElementsByClassName("countries_list")[0];
                 var tbody = document.createElement("tbody");
+
+                limitTop = Math.min(sortByDe.length, limitTop);
                 for (i = 0; i < limitTop; i++) {
                     var tr = document.createElement("tr");
                     tr.insertCell(0).innerHTML = sortByDe[i][0];
@@ -6509,6 +6617,8 @@ function init_index_visitors_location() {
                     tbody.appendChild(tr);
 
                 };
+
+
                 tbl_visitor_list.replaceChild(tbody, tbl_visitor_list.firstElementChild);
                 // var jsonData = {};
                 // for (i = 0; i < data.all.location_country_code.length; i++) {
@@ -6591,10 +6701,13 @@ function init_index_device() {
                 //get top limit
                 var labels_data = [],
                     data_value = [];
+                limitTop = Math.min(sortByDe.length, limitTop);
                 for (k = 0; k < limitTop; k++) {
                     labels_data.push(sortByDe[k][0]);
                     data_value.push(sortByDe[k][1]);
                 }
+
+
                 var backgroundColor_array = ["#BDC3C7", "#9B59B6", "#E74C3C", "#26B99A", "#3498DB"];
 
 
@@ -6805,7 +6918,7 @@ $(document).ready(function() {
         init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
         init_audiance_dropdown_metric();
-        // init_realtime_audiance_overview();
+        init_realtime_audiance_overview();
 
     }
 

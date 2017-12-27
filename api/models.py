@@ -99,6 +99,11 @@ class page_view_report(Model):
     location_path=columns.Text(primary_key=True)
     count=columns.Integer()
 
+class browser_language_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    browser_language=columns.Text(primary_key=True)
+    count=columns.Integer() # count number of user
+
     
 
 

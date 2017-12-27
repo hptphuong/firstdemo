@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     # 'firstpycharm.middleware.BookMiddleware',
-    # 'request_logger.middleware.RequestLoggerMiddleware',
+    'request_logger.middleware.RequestLoggerMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -105,9 +105,9 @@ DATABASES = {
          'ENGINE': 'django_cassandra_engine',
          'NAME': 'web_analytic',
          'TEST_NAME': 'test_db',
-         # 'HOST': '10.88.113.74',
+         'HOST': '10.88.113.74',
          # 'HOST': '10.88.96.94',
-         'HOST': '127.0.0.1',
+         # 'HOST': '127.0.0.1',
          'OPTIONS': {
              'replication': {
                  'strategy_class': 'SimpleStrategy',
