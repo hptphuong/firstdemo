@@ -435,7 +435,8 @@ def insert_data_fsa_log_visit(source_path):
             config_color_depth,
             config_viewport_size,
             config_java,
-            referal_xxx
+            referal_xxx,
+            location_city_name
                 )
             VALUES (
                 %(userid)s, 
@@ -455,7 +456,9 @@ def insert_data_fsa_log_visit(source_path):
                 %(config_color_depth)s,
                 %(config_viewport_size)s,
                 %(config_java)s,
-                %(referal_xxx)s
+                %(referal_xxx)s,
+                %(location_city_name)
+
                 )
             """, consistency_level=ConsistencyLevel.ONE)
         for row in reader:
@@ -479,7 +482,8 @@ def insert_data_fsa_log_visit(source_path):
                     config_color_depth=row[14],
                     config_viewport_size=row[15],
                     config_java=row[16],
-                    referal_xxx=row[17]
+                    referal_xxx=row[17],
+                    location_city_name=row[15]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
@@ -645,7 +649,8 @@ def insert_data_fsa_log_visit_modify(source_path):
             location_country_name, 
             location_ipv4,
             config_device,
-            location_path
+            location_path,
+            location_city_name
                 )
             VALUES (
                 %(userid)s, 
@@ -663,30 +668,53 @@ def insert_data_fsa_log_visit_modify(source_path):
                 %(location_country_name)s,
                 %(location_ipv4)s,
                 %(config_device)s,
-                %(location_path)s
+                %(location_path)s,
+                %(location_city_name)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
+        i=1;
         for row in reader:
             log.info(">>>>>>>>>>>>>>>>>>>>>>>"+(row[15]))
+            if(i):
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>0:"+(row[0]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>1:"+(row[1]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>2:"+(row[2]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>3:"+(row[3]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>4:"+(row[4]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>5:"+(row[5]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>6:"+(row[6]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>7:"+(row[7]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>8:"+(row[8]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>9:"+(row[9]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>10:"+(row[10]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>11:"+(row[11]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>12:"+(row[12]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>13:"+(row[13]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>14:"+(row[14]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>15:"+(row[15]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>16:"+(row[16]))
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>17:"+(row[17]))
+                i=0
             session.execute(
                 query, 
                 dict(
-                    userid=row[1], 
                     fsa=row[0],
+                    userid=row[1], 
                     fsid=row[2],
                     m_date=int(row[3]),
                     config_browser=row[4],
-                    config_browser_version=row[5],
-                    config_color_depth=row[6],
+                    config_browser_version='1',
+                    config_color_depth='24',
                     config_resolution=row[7],
                     config_viewport_size=row[7],
                     location_browser_en=row[13],
                     location_browser_lan=row[14],
-                    location_country_code=row[15],
-                    location_country_name=row[16],
-                    location_ipv4=row[17],
+                    location_country_code=row[16],
+                    location_country_name=row[17],
+                    location_ipv4=row[18],
                     config_device=row[8],
-                    location_path=row[18]
+                    location_path=row[18],
+                    location_city_name=row[15]
                 ))
             pass
         log.info("+--------------------------------------------------------+")

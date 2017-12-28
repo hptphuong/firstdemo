@@ -58,3 +58,4 @@ kafka.common.NoReplicaOnlineException: No replica for partition [log,0] is alive
 [2017-12-25 09:01:50,252] TRACE Controller 0 epoch 3 received response {error_code=0,partitions=[{topic=log,partition=0,error_code=0}]} for a request sent to broker Temp-PhuongHPT.fsoft.fpt.vn:9092 (id: 0 rack: null) (state.change.logger)
 [2017-12-25 09:01:50,252] TRACE Broker 0 cached leader info (LeaderAndIsrInfo:(Leader:0,ISR:0,LeaderEpoch:2,ControllerEpoch:3),ReplicationFactor:1),AllReplicas:0) for partition log-0 in response to UpdateMetadata request sent by controller 0 epoch 3 with correlation id 4 (state.change.logger)
 [2017-12-25 09:01:50,252] TRACE Controller 0 epoch 3 received response {error_code=0} for a request sent to broker Temp-PhuongHPT.fsoft.fpt.vn:9092 (id: 0 rack: null) (state.change.logger)
+[2017-12-28 13:20:35,565] TRACE Controller 0 epoch 4 started leader election for partition [log,0] (state.change.logger)

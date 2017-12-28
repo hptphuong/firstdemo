@@ -9,7 +9,8 @@ from api.models import (
     device_report,
     browser_report,
     page_view_report,
-    browser_language_report
+    browser_language_report,
+    city_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -240,7 +241,8 @@ def locationReportList(request):
 			# m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
 			
 			# m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
-			m_response['value'].append([ query_rslt_all[row]['location_country_code'],query_rslt_all[row]['location_count'],query_rslt_all[row]['location_country_name']])
+			m_response['value'].append([ query_rslt_all[row]['location_country_code'], \
+					query_rslt_all[row]['location_country_name'],query_rslt_all[row]['location_count']] )
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		logger.warn(">>>>>>>>>>>>> post request for location:")
@@ -264,12 +266,15 @@ def deviceReportList(request):
 	if request.method == 'GET':
 		logger.warn(">>>>>>>>>>>>> GET request for device:")
 		m_response={}
+		m_response['header']=['m_date','config_device','count']
+		m_response['value']=[]
+
 		query_rslt_all=(
 			device_report
 				.objects().all()
 			)
 		for row in range(0,len(query_rslt_all)):
-			m_response[query_rslt_all[row]['config_device']]=(query_rslt_all[row]['device_count'])
+			m_response['value'].append([query_rslt_all[row]['m_date'],query_rslt_all[row]['config_device'],query_rslt_all[row]['device_count']])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
 
@@ -279,14 +284,19 @@ def browsersReportList(request):
 	if request.method == 'GET':
 		logger.warn(">>>>>>>>>>>>> GET request for browsers:")
 		m_response={}
+		m_response['header']=['bucket','m_date','browser','count']
+		m_response['value']=[]
 		query_rslt_all=(
 			browser_report
 				.objects().all()
 			)
-
+		# logger.warn(">>>>:"+str(list(query_rslt_all)))
 		for row in range(0,len(query_rslt_all)):
-			logger.warn(str(row))
-			m_response[query_rslt_all[row]['config_browser']]=(query_rslt_all[row]['browser_count'])
+			# logger.warn(str(row))
+			# m_response[query_rslt_all[row]['config_browser']]=(query_rslt_all[row]['browser_count'])
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['m_date'],query_rslt_all[row]['config_browser'],query_rslt_all[row]['browser_count']\
+				])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
 
@@ -325,13 +335,35 @@ def browsersLanReportList(request):
 	if request.method == 'GET':
 		logger.warn(">>>>>>>>>>>>> GET request for browsersLanReportList:")
 		m_response={}
+		m_response['header']=['m_date','browser','count']
+		m_response['value']=[]
 		query_rslt_all=(
 			browser_language_report
 				.objects().all()
 			)
+
 		for row in range(0,len(query_rslt_all)):
-			logger.warn(str(row))
-			m_response[query_rslt_all[row]['browser_language']]=(query_rslt_all[row]['count'])
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['browser_language'],query_rslt_all[row]['count']\
+				])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
 
+@csrf_exempt
+def cityReportList(request):
+	if request.method == 'GET':
+		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		m_response={}
+		query_rslt_all=(
+			city_report
+				.objects().all()
+			)
+		m_response['header']=['m_date','city_name','count']
+		m_response['value']=[]
+		for row in range(0,len(query_rslt_all)):
+			# m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
+			
+			# m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
+			m_response['value'].append([ query_rslt_all[row]['m_date'], \
+					query_rslt_all[row]['city_name'],query_rslt_all[row]['count']] )
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)

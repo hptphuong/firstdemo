@@ -425,7 +425,7 @@ function generate_html_linechart_tooltip(d, m_back) {
     return tooltip_content;
 }
 
-function plot_fsa_user_chart(array_range_date) {
+function plot_fsa_user_chart(array_range_date, array_range_date) {
 
     // $('div#new_users.tab-pane.fade.tab-size').html('<div id="new_user_chart" ></div>');
     // var x_val = ['x'],
@@ -518,14 +518,41 @@ function plot_fsa_user_chart(array_range_date) {
             url: '/api/report/user_daily/',
             data: data,
             contentType: 'application/json',
-            success: function(data) {
-                m_data = JSON.parse(data);
-                m_data['date1'].unshift('x');
-                m_data['date2'].unshift('x1');
-                m_data['value1'].unshift('data1');
-                m_data['value2'].unshift('data2');
+            success: function(m_data) {
+                request_data = JSON.parse(this.data);
+                respond_data = JSON.parse(m_data);
+                var rlst_data = {},
+                    i = 0;
+                rlst_data['date1'] = [];
+                rlst_data['date2'] = [];
+                rlst_data['value1'] = [];
+                rlst_data['value2'] = [];
 
-                callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+                for (var m = moment(request_data['x1_start'][0]); m <= moment(request_data['x1_end'][0]); m.add(1, 'days')) {
+                    rlst_data['date1'].push(m.format("YYYY-MM-DD"));
+                    rlst_data['value1'].push(respond_data.date1.indexOf(m.format("YYYY-MM-DD")) != -1 ? respond_data['value1'][respond_data.date1.indexOf(m.format("YYYY-MM-DD"))] : 0);
+                    i++;
+                }
+                i = 0;
+                for (var m = moment(request_data['x2_start'][0]); m <= moment(request_data['x2_end'][0]); m.add(1, 'days')) {
+                    rlst_data['date2'].push(m.format("YYYY-MM-DD"));
+                    rlst_data['value2'].push(respond_data.date2.indexOf(m.format("YYYY-MM-DD")) != -1 ? respond_data['value2'][respond_data.date2.indexOf(m.format("YYYY-MM-DD"))] : 0);
+                    i++;
+                }
+                // i = 0;
+                // m_data = JSON.parse(m_data);
+
+                // m_data['date1'].unshift('x');
+                // m_data['date2'].unshift('x1');
+                // m_data['value1'].unshift('data1');
+                // m_data['value2'].unshift('data2');
+                rlst_data['date1'].unshift('x');
+                rlst_data['date2'].unshift('x1');
+                rlst_data['value1'].unshift('data1');
+                rlst_data['value2'].unshift('data2');
+
+                // callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+                callback_receive(rlst_data['date1'], rlst_data['date2'], rlst_data['value1'], rlst_data['value2']);
             }
 
         });
@@ -628,13 +655,49 @@ function plot_fsa_new_user_chart(array_range_date) {
             url: '/api/report/new_user_daily/',
             data: data,
             contentType: 'application/json',
-            success: function(data) {
-                m_data = JSON.parse(data);
-                m_data['date1'].unshift('x');
-                m_data['date2'].unshift('x1');
-                m_data['value1'].unshift('data1');
-                m_data['value2'].unshift('data2');
-                callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+            success: function(m_data) {
+                // m_data = JSON.parse(data);
+                // m_data['date1'].unshift('x');
+                // m_data['date2'].unshift('x1');
+                // m_data['value1'].unshift('data1');
+                // m_data['value2'].unshift('data2');
+
+                // callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+
+                request_data = JSON.parse(this.data);
+                respond_data = JSON.parse(m_data);
+                var rlst_data = {},
+                    i = 0;
+                rlst_data['date1'] = [];
+                rlst_data['date2'] = [];
+                rlst_data['value1'] = [];
+                rlst_data['value2'] = [];
+
+                for (var m = moment(request_data['x1_start'][0]); m <= moment(request_data['x1_end'][0]); m.add(1, 'days')) {
+                    rlst_data['date1'].push(m.format("YYYY-MM-DD"));
+                    rlst_data['value1'].push(respond_data.date1.indexOf(m.format("YYYY-MM-DD")) != -1 ? respond_data['value1'][respond_data.date1.indexOf(m.format("YYYY-MM-DD"))] : 0);
+                    i++;
+                }
+                i = 0;
+                for (var m = moment(request_data['x2_start'][0]); m <= moment(request_data['x2_end'][0]); m.add(1, 'days')) {
+                    rlst_data['date2'].push(m.format("YYYY-MM-DD"));
+                    rlst_data['value2'].push(respond_data.date2.indexOf(m.format("YYYY-MM-DD")) != -1 ? respond_data['value2'][respond_data.date2.indexOf(m.format("YYYY-MM-DD"))] : 0);
+                    i++;
+                }
+                // i = 0;
+                // m_data = JSON.parse(m_data);
+
+                // m_data['date1'].unshift('x');
+                // m_data['date2'].unshift('x1');
+                // m_data['value1'].unshift('data1');
+                // m_data['value2'].unshift('data2');
+                rlst_data['date1'].unshift('x');
+                rlst_data['date2'].unshift('x1');
+                rlst_data['value1'].unshift('data1');
+                rlst_data['value2'].unshift('data2');
+
+                // callback_receive(m_data['date1'], m_data['date2'], m_data['value1'], m_data['value2']);
+                callback_receive(rlst_data['date1'], rlst_data['date2'], rlst_data['value1'], rlst_data['value2']);
             }
 
         });
@@ -2349,15 +2412,17 @@ function audiance_overview_plot_two_metric(timerange) {
         return rlst;
     };
 
+    function getAllIndexes(arr, val) {
+        var indexes = [],
+            i = -1;
+        while ((i = arr.indexOf(val, i + 1)) != -1) {
+            indexes.push(i);
+        }
+        return indexes;
+    };
+
     function create_labels_data(start_date, end_date, labels, data, dimenson) {
-        function getAllIndexes(arr, val) {
-            var indexes = [],
-                i = -1;
-            while ((i = arr.indexOf(val, i + 1)) != -1) {
-                indexes.push(i);
-            }
-            return indexes;
-        };
+
         if (dimenson == "Day") {
             var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
             var m_start = moment(timerange[0]),
@@ -2415,11 +2480,11 @@ function audiance_overview_plot_two_metric(timerange) {
                     if (m_position_in_labels.length > 0) {
 
                         for (var mi = 0; mi < m_position_in_labels.length; mi++) {
-                            tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+                            week_value[j] = week_value[j] + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
                         }
 
-                    } else tmp = 0;
-                    week_value[j] = tmp;
+                    }
+                    // week_value[j] = tmp;
 
 
                 }
@@ -2453,11 +2518,12 @@ function audiance_overview_plot_two_metric(timerange) {
                     if (m_position_in_labels.length > 0) {
 
                         for (var mi = 0; mi < m_position_in_labels.length; mi++) {
-                            tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+                            month_value[j] = month_value[j] + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
                         }
 
-                    } else tmp = 0;
-                    month_value[j] = tmp;
+                    }
+                    // else tmp = 0;
+                    // month_value[j] = tmp;
                 }
             };
             return [month_label, month_value];
@@ -2537,6 +2603,17 @@ var pool_interval = {};
 var prev_returning_user,
     prev_new_user;
 
+function getTimeRange() {
+    var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+    timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
+    timerange[1] = moment(timerange[1], "MMM DD,YYYY").format("YYYY-MM-DD");
+    var data = JSON.stringify({
+        x1_start: [timerange[0]],
+        x1_end: [timerange[1]]
+    });
+    return data;
+};
+
 function update_count() {
     var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
     timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
@@ -2571,11 +2648,23 @@ function update_count() {
         sum_user = r1['value1'].reduce((a, b) => a + b, 0);
         sum_new_user = r2['value1'].reduce((a, b) => a + b, 0);
         var sum_pageviews = 0;
+
+
         for (var index = 0; index < r3.value1.length; index++) {
             sum_pageviews += r3.value1[index][1];
+            // var tmp = r3.value1[index];
+            // if (Array.isArray) {
+            //     sum_pageviews += tmp.reduce((a, b) => a + b, 0);
+            // } else sum_pageviews += tmp[1];
         };
-        console.log(sum_user);
-        console.log(sum_new_user);
+
+        // for (var mi = 0; mi < m_position_in_labels.length; mi++) {
+        //     tmp = tmp + ((data[m_position_in_labels[mi]].length > 0) ? data[m_position_in_labels[mi]].slice(-1)[0] : data[m_position_in_labels[mi]]);
+        // }
+
+        // } else tmp = 0; week_value[j] = tmp;
+        // console.log(sum_user);
+        // console.log(sum_new_user);
         document.getElementById("count_user").innerHTML = sum_user;
         document.getElementById("count_new_user").innerHTML = sum_new_user;
         document.getElementById("count_pageviews").innerHTML = sum_pageviews;
@@ -2869,7 +2958,7 @@ function init_daterangepicker_right() {
         // postRequestDataByTimeRange(start, end, 'a');
         // generate_array_range_date(start, end, label);
         var array_range_date = generate_array_range_date(start, end, label);
-        plot_fsa_user_chart(array_range_date);
+        plot_fsa_user_chart(array_range_date, array_range_date);
         plot_fsa_new_user_chart(array_range_date);
     };
 
@@ -6475,7 +6564,8 @@ function addRowHandlers() {
     table_header_list = {
         'Language': ['Language', 'Users', '%Users'],
         'Country': ['Country', 'Users', '%Users'],
-        'Browser': ['Browser', 'Users', '%Users']
+        'Browser': ['Browser', 'Users', '%Users'],
+        'City': ['City', 'Users', '%Users']
     };
     table_data_sample = [
         ['en-us', 16707, 0.5564],
@@ -6504,6 +6594,9 @@ function addRowHandlers() {
                         case "Country":
                             uri = "api/report/location/";
                             break;
+                        case "City":
+                            uri = "api/report/city/";
+                            break;
                         default:
                             uri = "";
                     };
@@ -6519,28 +6612,42 @@ function addRowHandlers() {
                                     table_data = [];
                                 var cell = row.getElementsByTagName("td")[0];
 
-                                if (cell.textContent == "Country") {
-                                    for(var ival=0;ival<data.value.length;ival++){
-                                    msum += data['value'][ival][1];
-                                    };
-                                    for(var ival=0;ival<data.value.length;ival++){
-                                        table_data.push([]);
-                                    };
+                                // if (cell.textContent == "Country") {
+                                //     for (var ival = 0; ival < data.value.length; ival++) {
+                                //         msum += data['value'][ival][1];
+                                //     };
+                                //     for (var ival = 0; ival < data.value.length; ival++) {
+                                //         table_data.push([]);
+                                //     };
 
-                                } else {
-                                    for (i in data) {
-                                        msum += data[i];
-                                    };
+                                // } else {
+                                for (item in data.value) {
+                                    msum += data.value[item].slice(-1)[0];
+                                };
+                                // process data
 
-                                    for (i in data) {
-                                        table_data.push([i, data[i], data[i] / msum]);
-                                    };
-                                    // var cell = row.getElementsByTagName("td")[0];
+                                function groupbyindex(array_data, idkey, idvalue) {
+                                    var rlst = {};
+                                    for (irow in array_data) {
+                                        if (array_data[irow][idkey] in rlst) {
+                                            rlst[array_data[irow][idkey]] += array_data[irow][idvalue];
 
-                                    table_header = table_header_list[cell.textContent];
-                                    // table_data = table_data_sample;
-                                    audiance_overivew_explore_table(table_header, table_data);
-                                }
+                                        } else rlst[array_data[irow][idkey]] = array_data[irow][idvalue];
+
+                                    }
+                                    return rlst;
+
+                                };
+                                var process_data = groupbyindex(data.value, data.value.length - 1, data.value.length);
+                                for (i in process_data) {
+                                    table_data.push([i, process_data[i], process_data[i] / msum]);
+                                };
+                                // var cell = row.getElementsByTagName("td")[0];
+
+                                table_header = table_header_list[cell.textContent];
+                                // table_data = table_data_sample;
+                                audiance_overivew_explore_table(table_header, table_data);
+                                // }
 
                             }
                         });
@@ -6683,25 +6790,32 @@ function init_index_device() {
                 var sortByDe = []
                 var limitTop = 5,
                     totalViews = 0;
-                data = JSON.parse(data);
+                var data = JSON.parse(data);
                 // data['totalCountry'] = Object.keys(data.byCode).length;
 
-
+                var data_value_sum = {};
 
 
                 // Change to array to sort
-                for (k in data) {
+                for (var irow = 0; irow < data.value.length; irow++) {
+                    if (data.value[irow].slice(-2)[0] in data_value_sum) {
+                        data_value_sum[data.value[irow].slice(-2)[0]] += data.value[irow].slice(-1)[0];
+                    } else
+                        data_value_sum[data.value[irow].slice(-2)[0]] = data.value[irow].slice(-1)[0];
+                    // sortByDe.push([data.value[irow].slice(-2)[0], data.value[irow].slice(-1)[0]]);
 
-                    sortByDe.push([k, data[k]]);
+                }
 
+                for (item in data_value_sum) {
+                    sortByDe.push([item, data_value_sum[item]]);
                 }
 
                 sortByDe.sort(function(a, b) {
                     return b[1] - a[1]
                 });
 
-                for (k in data) {
-                    totalViews = totalViews + data[k];
+                for (k in data_value_sum) {
+                    totalViews = totalViews + data_value_sum[k];
                 }
                 //get top limit
                 var labels_data = [],
@@ -6869,11 +6983,11 @@ function init_index_browsers_usage() {
                     div_widget_summary,
                     div_browsers_usage = document.getElementById("browsers_usage");
                 data = JSON.parse(data);
-                for (k in data) {
-                    totalViews = totalViews + data[k];
+                for (k in data.value) {
+                    totalViews = totalViews + data.value[k].slice(-1)[0];
                 }
-                for (k in data) {
-                    div_widget_summary = generate_widget_summary(k, data[k] / totalViews, data[k]);
+                for (k in data.value) {
+                    div_widget_summary = generate_widget_summary(data.value[k].slice(-2)[0], data.value[k].slice(-1)[0] / totalViews, data.value[k].slice(-1)[0]);
                     div_browsers_usage.appendChild(div_widget_summary);
                 }
 

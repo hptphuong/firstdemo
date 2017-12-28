@@ -68,6 +68,7 @@ class fsa_log_visit(Model):
     location_country_code=columns.Text()
     location_country_name=columns.Text()
     location_browser_en=columns.Text()
+    location_city_name=columns.Text()
     config_browser=columns.Text()
     config_device=columns.Text()
     config_browser_name=columns.Text()
@@ -81,17 +82,20 @@ class fsa_log_visit(Model):
 
 class location_report(Model):
     bucket=columns.Integer(primary_key=True)
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
     location_count=columns.Integer()
-    location_country_code=columns.Text(primary_key=True)
+    location_country_code=columns.Text(primary_key=True,clustering_order="DESC")
     location_country_name= columns.Text()
 class device_report(Model):
     bucket=columns.Integer(primary_key=True) # 3
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
     device_count=columns.Integer()
-    config_device=columns.Text(primary_key=True)
+    config_device=columns.Text(primary_key=True,clustering_order="DESC")
 class browser_report(Model):
     bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
     browser_count=columns.Integer()
-    config_browser=columns.Text(primary_key=True)
+    config_browser=columns.Text(primary_key=True,clustering_order="DESC")
 
 class page_view_report(Model):
     bucket=columns.Integer(primary_key=True) # 4
@@ -101,10 +105,22 @@ class page_view_report(Model):
 
 class browser_language_report(Model):
     bucket=columns.Integer(primary_key=True) # 4
-    browser_language=columns.Text(primary_key=True)
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
+    browser_language=columns.Text(primary_key=True,clustering_order="DESC")
     count=columns.Integer() # count number of user
 
-    
+class city_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
+    city_name=columns.Text(primary_key=True,clustering_order="DESC")
+    count=columns.Integer() # count number of user
 
 
+class draft_browser_language_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
+    browser_language=columns.Text(primary_key=True,clustering_order="DESC")
+    count=columns.Integer() # count number of user
+
+ 
 
