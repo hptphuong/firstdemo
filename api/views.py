@@ -10,7 +10,9 @@ from api.models import (
     browser_report,
     page_view_report,
     browser_language_report,
-    city_report
+    city_report,
+    os_report,
+    system_screen_report
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
@@ -245,22 +247,25 @@ def locationReportList(request):
 					query_rslt_all[row]['location_country_name'],query_rslt_all[row]['location_count']] )
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
-		logger.warn(">>>>>>>>>>>>> post request for location:")
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
 		m_response={}
+		m_response['header']=['location_country_code','location_count','location_country_name']
+		m_response['value']=[]
 		query_rslt_all=(
 			location_report
-				.objects().all()
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
 			)
-		m_response['byCode']={}
-		m_response['byName']={}
 		for row in range(0,len(query_rslt_all)):
-			m_response['byCode'][query_rslt_all[row]['location_country_code'].lower()]=(query_rslt_all[row]['location_count'])
-			
-			m_response['byName'][query_rslt_all[row]['location_country_name']]=(query_rslt_all[row]['location_count'])
-
+				m_response['value'].append([ query_rslt_all[row]['location_country_code'], \
+					query_rslt_all[row]['location_country_name'],query_rslt_all[row]['location_count']] )
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
-
 @csrf_exempt
 def deviceReportList(request):
 	if request.method == 'GET':
@@ -298,6 +303,28 @@ def browsersReportList(request):
 				query_rslt_all[row]['m_date'],query_rslt_all[row]['config_browser'],query_rslt_all[row]['browser_count']\
 				])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	if request.method == 'POST':
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		m_response['header']=['bucket','m_date','browser','count']
+		m_response['value']=[]
+		query_rslt_all=(
+			browser_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['m_date'],query_rslt_all[row]['config_browser'],query_rslt_all[row]['browser_count']\
+				])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+
 	return JsonResponse('not support', status=400)
 
 @csrf_exempt
@@ -347,6 +374,28 @@ def browsersLanReportList(request):
 				query_rslt_all[row]['browser_language'],query_rslt_all[row]['count']\
 				])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+
+	if request.method == 'POST':
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		m_response['header']=['m_date','browser','count']
+		m_response['value']=[]
+		query_rslt_all=(
+			browser_language_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['browser_language'],query_rslt_all[row]['count']\
+				])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
 
 @csrf_exempt
@@ -367,3 +416,74 @@ def cityReportList(request):
 			m_response['value'].append([ query_rslt_all[row]['m_date'], \
 					query_rslt_all[row]['city_name'],query_rslt_all[row]['count']] )
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	if request.method == 'POST':
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for cityReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		m_response['header']=['m_date','browser','count']
+		m_response['value']=[]
+		query_rslt_all=(
+			city_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+		for row in range(0,len(query_rslt_all)):
+			m_response['value'].append([ query_rslt_all[row]['m_date'], \
+					query_rslt_all[row]['city_name'],query_rslt_all[row]['count']] )
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+
+@csrf_exempt
+def osReportList(request):
+	if request.method == 'POST':
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		m_response['header']=['m_date','os_name','count']
+		m_response['value']=[]
+		query_rslt_all=(
+			os_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['os_name'],query_rslt_all[row]['count']\
+				])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)
+
+@csrf_exempt
+def systemScreenReportList(request):
+	if request.method == 'POST':
+		data = JSONParser().parse(request)		
+		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		m_response={}
+		m_response['header']=['m_date','screen','count']
+		m_response['value']=[]
+		query_rslt_all=(
+			system_screen_report
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+
+		for row in range(0,len(query_rslt_all)):
+			m_response['value'].append([ query_rslt_all[row]['m_date'],\
+				query_rslt_all[row]['screen'],query_rslt_all[row]['count']\
+				])
+		return JsonResponse(json.dumps(m_response), status=201, safe=False)
+	return JsonResponse('not support', status=400)

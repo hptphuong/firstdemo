@@ -3,7 +3,8 @@
     // version: 0.3 -- update os
     // update current path
     // update path directly
-    // debug delay
+    // 29/12/2017   : Add ability to detect OS
+    //test force update
     var O = window,
         M = document,
         m_loccation = M.location;;
@@ -324,7 +325,34 @@
 
 
 
+    function getOS() {
+        // var userAgent = window.navigator.userAgent,
+        //     platform = window.navigator.platform,
+        //     macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        //     windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        //     iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+        //     os = null;
 
+        // if (macosPlatforms.indexOf(platform) !== -1) {
+        //     os = 'Mac OS';
+        // } else if (iosPlatforms.indexOf(platform) !== -1) {
+        //     os = 'iOS';
+        // } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        //     os = 'Windows';
+        // } else if (/Android/.test(userAgent)) {
+        //     os = 'Android';
+        // } else if (!os && /Linux/.test(platform)) {
+        //     os = 'Linux';
+        // } else os = 'Unknow';
+
+        // return os;
+        var OSName = "Unknown OS";
+        if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
+        if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
+        if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
+        if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
+        return OSName;
+    }
 
 
 
@@ -565,6 +593,11 @@
         tracker.set("config_browser", device);
         // determine browser
         // add to tracker
+
+
+        // determine os
+
+        tracker.set('location_os', getOS());
         this.trackers.push(tracker);
 
 
@@ -593,6 +626,7 @@
         tailUrl = tailUrl + "&je=" + a.get("javaEnabled") * 1;
         tailUrl = tailUrl + "&cdev=" + a.get("config_device");
         tailUrl = tailUrl + "&cbr=" + a.get("config_browser");
+        tailUrl = tailUrl + "&los=" + a.get("location_os");
         a.get("userId") && (tailUrl = tailUrl + "&uid=" + a.get("userId"));
 
         // fsaCore.requestImage('http://127.0.0.1:8000/a.gif?', tailUrl);

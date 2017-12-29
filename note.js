@@ -125,7 +125,7 @@ script >
         a.src = g;
         m.parentNode.insertBefore(a, m)
 
-    })(window, document, 'script', 'http://10.88.113.111:8000/static/fsa_analytic.js', 'fsa');
+    })(window, document, 'script', 'http://10.88.113.111:8000/static/fsa_analytic.js?1000', 'fsa');
 
 // 'http://10.88.113.111:8000/static/fsa_analytic.js'
 fsa('create', 'UA-107854568-t0', 'auto');

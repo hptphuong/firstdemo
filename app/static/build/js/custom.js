@@ -2668,6 +2668,7 @@ function update_count() {
         document.getElementById("count_user").innerHTML = sum_user;
         document.getElementById("count_new_user").innerHTML = sum_new_user;
         document.getElementById("count_pageviews").innerHTML = sum_pageviews;
+        document.getElementById("count_pages_users").innerHTML = Math.round(sum_pageviews / sum_user);
         sum_returning_user = sum_user - sum_new_user;
 
         if (sum_new_user != prev_new_user) {
@@ -2727,7 +2728,7 @@ function init_audiance_timerange_right() {
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
         minDate: '01/01/2012',
-        maxDate: moment().format('MM/DD/YYYY'),
+        maxDate: moment().add(10, 'days').format('MM/DD/YYYY'),
         dateLimit: {
             days: 75
         },
@@ -6558,6 +6559,19 @@ function audiance_overivew_explore_table(table_header, table_data) {
     tableare.appendChild(table);
 }
 
+function groupbyindex(array_data, idkey, idvalue) {
+    var rlst = {};
+    for (irow in array_data) {
+        if (array_data[irow][idkey] in rlst) {
+            rlst[array_data[irow][idkey]] += array_data[irow][idvalue];
+
+        } else rlst[array_data[irow][idkey]] = array_data[irow][idvalue];
+
+    }
+    return rlst;
+
+};
+
 function addRowHandlers() {
     var table = document.getElementById("audiance_ov_cat_table");
     var rows = table.getElementsByTagName("tr");
@@ -6565,7 +6579,10 @@ function addRowHandlers() {
         'Language': ['Language', 'Users', '%Users'],
         'Country': ['Country', 'Users', '%Users'],
         'Browser': ['Browser', 'Users', '%Users'],
-        'City': ['City', 'Users', '%Users']
+        'City': ['City', 'Users', '%Users'],
+        'Operating System': ['Operating System', 'Users', '%Users'],
+        'Screen Resolution': ['Screen Resolution', 'Users', '%Users']
+
     };
     table_data_sample = [
         ['en-us', 16707, 0.5564],
@@ -6597,15 +6614,22 @@ function addRowHandlers() {
                         case "City":
                             uri = "api/report/city/";
                             break;
+                        case "Operating System":
+                            uri = "api/report/os_system/";
+                            break;
+                        case "Screen Resolution":
+                            uri = "api/report/screen_system/";
+                            break;
                         default:
                             uri = "";
                     };
                     if (uri) {
-
+                        var data = getTimeRange();
                         $.ajax({
-                            type: "GET",
+                            type: "POST",
                             url: uri,
                             contentType: 'application/json',
+                            data: data,
                             success: function(data) {
                                 data = JSON.parse(data);
                                 var msum = 0,
@@ -6626,22 +6650,17 @@ function addRowHandlers() {
                                 };
                                 // process data
 
-                                function groupbyindex(array_data, idkey, idvalue) {
-                                    var rlst = {};
-                                    for (irow in array_data) {
-                                        if (array_data[irow][idkey] in rlst) {
-                                            rlst[array_data[irow][idkey]] += array_data[irow][idvalue];
 
-                                        } else rlst[array_data[irow][idkey]] = array_data[irow][idvalue];
+                                // calculate idkey and idvalue for pick value which match to key
+                                var idkey = (data.value.length > 0 && data.value[0].length > 0) ? data.value[0].length - 2 : false,
+                                    idvalue = (data.value.length > 0 && data.value[0].length > 0) ? data.value[0].length - 1 : false;
+                                if (idkey && idvalue) {
+                                    var process_data = groupbyindex(data.value, idkey, idvalue);
+                                    for (i in process_data) {
+                                        table_data.push([i, process_data[i], process_data[i] / msum]);
+                                    };
+                                } else table_data = [];
 
-                                    }
-                                    return rlst;
-
-                                };
-                                var process_data = groupbyindex(data.value, data.value.length - 1, data.value.length);
-                                for (i in process_data) {
-                                    table_data.push([i, process_data[i], process_data[i] / msum]);
-                                };
                                 // var cell = row.getElementsByTagName("td")[0];
 
                                 table_header = table_header_list[cell.textContent];
@@ -6687,7 +6706,7 @@ function init_index_visitors_location() {
         // });
         // get location report
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: '/api/report/location/',
             contentType: 'application/json',
             success: function(data) {
@@ -6695,20 +6714,26 @@ function init_index_visitors_location() {
                 var sortByDe = []
                 var limitTop = 5;
                 data = JSON.parse(data);
-                data['totalCountry'] = Object.keys(data.byCode).length;
+                var processed_data = groupbyindex(data.value, 1, 2),
+                    totalCountry = Object.keys(processed_data).length,
+                    totalViews = 0;
+                // data['totalCountry'] = Object.keys(data.byCode).length;
                 data['totalViews'] = 0;
 
-                for (k in data.byCode) {
-                    data['totalViews'] = data['totalViews'] + data.byCode[k];
+                for (k in processed_data) {
+                    // data['totalViews'] = data['totalViews'] + data.byCode[k];
+                    totalViews += processed_data[k];
+                    // Change to array to sort
+                    sortByDe.push([k, processed_data[k]]);
 
                 }
 
-                // Change to array to sort
-                for (k in data.byName) {
 
-                    sortByDe.push([k, data.byName[k]]);
+                // for (k in data.byName) {
 
-                }
+                //     sortByDe.push([k, data.byName[k]]);
+
+                // }
 
                 sortByDe.sort(function(a, b) {
                     return b[1] - a[1]
@@ -6716,7 +6741,7 @@ function init_index_visitors_location() {
 
                 // // // Make list of top limit countries
                 $('.line_30').
-                text(Number(data['totalViews']).toLocaleString() + " Users from " + String(data['totalCountry']) + " countries");
+                text(Number(totalViews).toLocaleString() + " Users from " + String(totalCountry) + " countries");
 
                 var tbl_visitor_list = document.getElementsByClassName("countries_list")[0];
                 var tbody = document.createElement("tbody");
@@ -6725,20 +6750,26 @@ function init_index_visitors_location() {
                 for (i = 0; i < limitTop; i++) {
                     var tr = document.createElement("tr");
                     tr.insertCell(0).innerHTML = sortByDe[i][0];
-                    tr.insertCell(1).innerHTML = Math.round(sortByDe[i][1] / data['totalViews'] * 100) + "%";
+                    tr.insertCell(1).innerHTML = Math.round(sortByDe[i][1] / totalViews * 100) + "%";
                     tbody.appendChild(tr);
 
                 };
 
 
                 tbl_visitor_list.replaceChild(tbody, tbl_visitor_list.firstElementChild);
+                var processed_data_by_code = groupbyindex(data.value, 0, 2);
+                var lower_key_data_by_code = {};
+                for (k in processed_data_by_code) {
+                    lower_key_data_by_code[k.toLowerCase()] = processed_data_by_code[k];
+                }
                 // var jsonData = {};
                 // for (i = 0; i < data.all.location_country_code.length; i++) {
                 //     jsonData[data.all.location_country_code[i].toLowerCase()] = (data.all.location_count[i]);
                 // }
-
+                //                 data.byCode
+                // {vn: 14}
                 // Make world-map-gdp
-                if ($('#world-map-gdp').length && Object.keys(data.byCode).length > 0) {
+                if ($('#world-map-gdp').length && Object.keys(processed_data_by_code).length > 0) {
 
                     $('#world-map-gdp').vectorMap({
                         map: 'world_en',
@@ -6748,7 +6779,7 @@ function init_index_visitors_location() {
                         selectedColor: '#666666',
                         enableZoom: true,
                         showTooltip: true,
-                        values: data.byCode,
+                        values: lower_key_data_by_code,
                         scaleColors: ['#E6F2F0', '#149B7E'],
                         normalizeFunction: 'polynomial',
                         onLabelShow: function(event, label, code) {
@@ -6756,8 +6787,8 @@ function init_index_visitors_location() {
                             //     //     event.preventDefault();
                             //     // } else if (label[0].innerHTML == "China") {
                             //     // }
-                            if (data.byCode[code])
-                                label.append(': ' + data.byCode[code] + ' Users');
+                            if (lower_key_data_by_code)
+                                label.append(': ' + lower_key_data_by_code[code] + ' Users');
                         },
                     });
 
@@ -6986,11 +7017,17 @@ function init_index_browsers_usage() {
                 for (k in data.value) {
                     totalViews = totalViews + data.value[k].slice(-1)[0];
                 }
-                for (k in data.value) {
-                    div_widget_summary = generate_widget_summary(data.value[k].slice(-2)[0], data.value[k].slice(-1)[0] / totalViews, data.value[k].slice(-1)[0]);
+                // process data
+
+                processed_data = groupbyindex(data.value, 2, 3);
+                // for (k in data.value) {
+                //     div_widget_summary = generate_widget_summary(data.value[k].slice(-2)[0], data.value[k].slice(-1)[0] / totalViews, data.value[k].slice(-1)[0]);
+                //     div_browsers_usage.appendChild(div_widget_summary);
+                // }
+                for (k in processed_data) {
+                    div_widget_summary = generate_widget_summary(k, processed_data[k] / totalViews, processed_data[k]);
                     div_browsers_usage.appendChild(div_widget_summary);
                 }
-
             }
 
         });
@@ -7037,7 +7074,7 @@ $(document).ready(function() {
         init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
         init_audiance_dropdown_metric();
-        // init_realtime_audiance_overview();
+        init_realtime_audiance_overview();
 
     }
 

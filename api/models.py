@@ -76,6 +76,7 @@ class fsa_log_visit(Model):
     config_resolution=columns.Text()
     config_color_depth=columns.Text()
     config_viewport_size=columns.Text()
+    location_os =columns.Text()
     config_java =columns.Text()
     referal_xxx =columns.Text()
 
@@ -116,11 +117,48 @@ class city_report(Model):
     count=columns.Integer() # count number of user
 
 
+class os_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
+    os_name=columns.Text(primary_key=True,clustering_order="DESC")
+    count=columns.Integer() # count number of user
+
+class system_screen_report(Model):
+    bucket=columns.Integer(primary_key=True) # 4
+    m_date=columns.Integer(primary_key=True,clustering_order="DESC")
+    screen=columns.Text(primary_key=True,clustering_order="DESC")
+    count=columns.Integer() # count number of user
+
+
+
 class draft_browser_language_report(Model):
     bucket=columns.Integer(primary_key=True) # 4
     m_date=columns.Integer(primary_key=True,clustering_order="DESC")
     browser_language=columns.Text(primary_key=True,clustering_order="DESC")
     count=columns.Integer() # count number of user
 
- 
+
+class draft_fsa_log_visit(Model):
+    fsa=columns.Text(primary_key=True)
+    userid=columns.Text(primary_key=True)
+    fsid =columns.Text(primary_key=True)
+    m_date=columns.BigInt(primary_key=True)
+    idsite =columns.Text()
+    location_path=columns.Text()
+    location_ipv4=columns.Text()
+    location_ipv6 =columns.Text()
+    location_browser_lan=columns.Text()
+    location_country_code=columns.Text()
+    location_country_name=columns.Text()
+    location_browser_en=columns.Text()
+    location_city_name=columns.Text()
+    config_browser=columns.Text()
+    config_device=columns.Text()
+    config_browser_name=columns.Text()
+    config_browser_version=columns.Text()
+    config_resolution=columns.Text()
+    config_color_depth=columns.Text()
+    config_viewport_size=columns.Text()
+    config_java =columns.Text()
+    referal_xxx =columns.Text()
 

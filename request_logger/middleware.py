@@ -61,6 +61,7 @@ class RequestLoggerMiddleware(MiddlewareMixin):
             dataExtracted['javaEnabled'] = request.GET['je']
             dataExtracted['config_device'] = request.GET['cdev']
             dataExtracted['config_browser'] = request.GET['cbr']
+            dataExtracted['location_os'] = request.GET['los']
             if('uid' in request.GET):
                 dataExtracted['userId'] = request.GET['uid']
             producer.send('log', dataExtracted)

@@ -634,87 +634,88 @@ def insert_data_fsa_log_visit_modify(source_path):
 
         query = SimpleStatement("""
             INSERT INTO fsa_log_visit (
-            userid, 
-            fsa, 
-            fsid, 
-            m_date, 
-            config_browser,
-            config_browser_version, 
-            config_color_depth, 
-            config_resolution, 
-            config_viewport_size, 
-            location_browser_en,
-            location_browser_lan, 
-            location_country_code,
-            location_country_name, 
-            location_ipv4,
-            config_device,
-            location_path,
-            location_city_name
+                fsa, 
+                userid, 
+                fsid, 
+                m_date, 
+                config_browser,
+                config_browser_name, 
+                config_browser_version, 
+                config_color_depth,
+                config_device, 
+                config_java, 
+                config_resolution,
+                config_viewport_size, 
+                idsite, 
+                location_browser_en,
+                location_browser_lan, 
+                location_city_name, 
+                location_country_code,
+                location_country_name, 
+                location_ipv4, 
+                location_ipv6, 
+                location_os,
+                location_path, 
+                referal_xxx
                 )
             VALUES (
+                %(fsa)s, 
                 %(userid)s, 
-                %(fsa)s,
-                %(fsid)s,
-                %(m_date)s,
+                %(fsid)s, 
+                %(m_date)s, 
                 %(config_browser)s,
-                %(config_browser_version)s,
+                %(config_browser_name)s, 
+                %(config_browser_version)s, 
                 %(config_color_depth)s,
+                %(config_device)s, 
+                %(config_java)s, 
                 %(config_resolution)s,
-                %(config_viewport_size)s,
+                %(config_viewport_size)s, 
+                %(idsite)s, 
                 %(location_browser_en)s,
-                %(location_browser_lan)s,
+                %(location_browser_lan)s, 
+                %(location_city_name)s, 
                 %(location_country_code)s,
-                %(location_country_name)s,
-                %(location_ipv4)s,
-                %(config_device)s,
-                %(location_path)s,
-                %(location_city_name)s
+                %(location_country_name)s, 
+                %(location_ipv4)s, 
+                %(location_ipv6)s, 
+                %(location_os)s,
+                %(location_path)s, 
+                %(referal_xxx)s
                 )
             """, consistency_level=ConsistencyLevel.ONE)
         i=1;
         for row in reader:
             log.info(">>>>>>>>>>>>>>>>>>>>>>>"+(row[15]))
             if(i):
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>0:"+(row[0]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>1:"+(row[1]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>2:"+(row[2]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>3:"+(row[3]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>4:"+(row[4]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>5:"+(row[5]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>6:"+(row[6]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>7:"+(row[7]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>8:"+(row[8]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>9:"+(row[9]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>10:"+(row[10]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>11:"+(row[11]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>12:"+(row[12]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>13:"+(row[13]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>14:"+(row[14]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>15:"+(row[15]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>16:"+(row[16]))
-                log.info(">>>>>>>>>>>>>>>>>>>>>>>17:"+(row[17]))
+
                 i=0
             session.execute(
                 query, 
                 dict(
-                    fsa=row[0],
+                    fsa =row[0], 
                     userid=row[1], 
-                    fsid=row[2],
-                    m_date=int(row[3]),
+                    fsid=row[2], 
+                    m_date=int(row[3]), 
                     config_browser=row[4],
-                    config_browser_version='1',
-                    config_color_depth='24',
-                    config_resolution=row[7],
-                    config_viewport_size=row[7],
+                    config_browser_name=row[5], 
+                    config_browser_version=row[6], 
+                    config_color_depth=row[7],
+                    config_device=row[8], 
+                    config_java=row[9], 
+                    config_resolution=row[10],
+                    config_viewport_size=row[11], 
+                    idsite=row[12], 
                     location_browser_en=row[13],
-                    location_browser_lan=row[14],
+                    location_browser_lan=row[14], 
+                    location_city_name=row[15], 
                     location_country_code=row[16],
-                    location_country_name=row[17],
-                    location_ipv4=row[18],
-                    config_device=row[8],
-                    location_path=row[18],
-                    location_city_name=row[15]
+                    location_country_name=row[17], 
+                    location_ipv4=row[18], 
+                    location_ipv6=row[19], 
+                    location_os=row[20],
+                    location_path=row[21], 
+                    referal_xxx=row[22]
                 ))
             pass
         log.info("+--------------------------------------------------------+")
