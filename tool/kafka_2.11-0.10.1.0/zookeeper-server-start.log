@@ -24,3 +24,12 @@
 [2017-12-29 08:49:25,839] INFO minSessionTimeout set to -1 (org.apache.zookeeper.server.ZooKeeperServer)
 [2017-12-29 08:49:25,839] INFO maxSessionTimeout set to -1 (org.apache.zookeeper.server.ZooKeeperServer)
 [2017-12-29 08:49:25,850] INFO binding to port 0.0.0.0/0.0.0.0:2181 (org.apache.zookeeper.server.NIOServerCnxnFactory)
+[2017-12-29 08:49:36,701] INFO Accepted socket connection from /127.0.0.1:63715 (org.apache.zookeeper.server.NIOServerCnxnFactory)
+[2017-12-29 08:49:36,701] INFO Client attempting to establish new session at /127.0.0.1:63715 (org.apache.zookeeper.server.ZooKeeperServer)
+[2017-12-29 08:49:36,701] INFO Creating new log file: log.48 (org.apache.zookeeper.server.persistence.FileTxnLog)
+[2017-12-29 08:49:36,869] INFO Established session 0x1609ff5abf90000 with negotiated timeout 6000 for client /127.0.0.1:63715 (org.apache.zookeeper.server.ZooKeeperServer)
+[2017-12-29 08:49:37,478] INFO Got user-level KeeperException when processing sessionid:0x1609ff5abf90000 type:delete cxid:0x27 zxid:0x4b txntype:-1 reqpath:n/a Error Path:/admin/preferred_replica_election Error:KeeperErrorCode = NoNode for /admin/preferred_replica_election (org.apache.zookeeper.server.PrepRequestProcessor)
+[2017-12-29 08:49:37,562] INFO Got user-level KeeperException when processing sessionid:0x1609ff5abf90000 type:create cxid:0x33 zxid:0x4c txntype:-1 reqpath:n/a Error Path:/brokers Error:KeeperErrorCode = NodeExists for /brokers (org.apache.zookeeper.server.PrepRequestProcessor)
+[2017-12-29 08:49:37,562] INFO Got user-level KeeperException when processing sessionid:0x1609ff5abf90000 type:create cxid:0x34 zxid:0x4d txntype:-1 reqpath:n/a Error Path:/brokers/ids Error:KeeperErrorCode = NodeExists for /brokers/ids (org.apache.zookeeper.server.PrepRequestProcessor)
+[2017-12-29 16:58:12,423] WARN Exception causing close of session 0x1609ff5abf90000 due to java.io.IOException: An existing connection was forcibly closed by the remote host (org.apache.zookeeper.server.NIOServerCnxn)
+Terminate batch job (Y/N)? 
