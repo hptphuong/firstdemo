@@ -2674,7 +2674,9 @@ function update_count() {
         if (sum_new_user != prev_new_user) {
             prev_new_user = sum_new_user;
             if ($('#pieChart_newuser_returnuser').length) {
-
+                a = $('#pieChart_newuser_returnuser').parent();
+                $('#pieChart_newuser_returnuser').remove();
+                a.append('<canvas id="pieChart_newuser_returnuser"></canvas>');
                 var ctx = document.getElementById("pieChart_newuser_returnuser");
                 var data = {
                     datasets: [{
@@ -2728,7 +2730,7 @@ function init_audiance_timerange_right() {
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
         minDate: '01/01/2012',
-        maxDate: moment().add(10, 'days').format('MM/DD/YYYY'),
+        maxDate: moment().format('MM/DD/YYYY'),
         dateLimit: {
             days: 75
         },

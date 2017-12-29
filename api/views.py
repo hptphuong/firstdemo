@@ -179,8 +179,6 @@ def newuserDailyReportList(request):
 	if request.method == 'POST':
 		logger.warn(">>>> Post for newuserDailyReportList")
 		data = JSONParser().parse(request)
-		# if(len(data['x1_start'])==0 or len(data['x1_end']) or len(data['x2_start']) or len(data['x2_end'])):
-		# 	return JsonResponse({'status':'false','message':'null querry'}, status=400)
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -189,6 +187,10 @@ def newuserDailyReportList(request):
 
 		m_response={}
 		# first range
+		print("x1_start>>>>>>>>>>>>:"+str(x1_start))
+		print("x1_end>>>>>>>>>>>>:"+str(x1_end))
+		print("x2_start>>>>>>>>>>>>:"+str(x2_start))
+		print("x2_end>>>>>>>>>>>>:"+str(x2_end))
 
 		if(x1_start & x1_end):
 			logger.warn(">>>> x1_start & x1_end")

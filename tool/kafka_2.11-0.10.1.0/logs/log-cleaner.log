@@ -200,3 +200,5 @@
 [2017-12-29 08:39:11,102] INFO [kafka-log-cleaner-thread-0], Shutdown completed (kafka.log.LogCleaner)
 [2017-12-29 08:49:37,152] INFO Starting the log cleaner (kafka.log.LogCleaner)
 [2017-12-29 08:49:37,163] INFO [kafka-log-cleaner-thread-0], Starting  (kafka.log.LogCleaner)
+[2017-12-29 16:59:06,032] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2017-12-29 16:59:06,065] INFO [kafka-log-cleaner-thread-0], Starting  (kafka.log.LogCleaner)

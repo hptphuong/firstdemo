@@ -196,3 +196,7 @@ kafka.common.NoReplicaOnlineException: No replica for partition [log,0] is alive
 [2017-12-29 08:49:38,015] TRACE Controller 0 epoch 6 received response {error_code=0,partitions=[{topic=log,partition=0,error_code=0}]} for a request sent to broker Temp-PhuongHPT.fsoft.fpt.vn:9092 (id: 0 rack: null) (state.change.logger)
 [2017-12-29 08:49:38,025] TRACE Broker 0 cached leader info (LeaderAndIsrInfo:(Leader:0,ISR:0,LeaderEpoch:4,ControllerEpoch:6),ReplicationFactor:1),AllReplicas:0) for partition log-0 in response to UpdateMetadata request sent by controller 0 epoch 6 with correlation id 4 (state.change.logger)
 [2017-12-29 08:49:38,025] TRACE Controller 0 epoch 6 received response {error_code=0} for a request sent to broker Temp-PhuongHPT.fsoft.fpt.vn:9092 (id: 0 rack: null) (state.change.logger)
+[2017-12-29 16:58:54,550] DEBUG preRegister called. Server=com.sun.jmx.mbeanserver.JmxMBeanServer@66d3c617, name=log4j:logger=state.change.logger (state.change.logger)
+[2017-12-29 16:59:07,289] TRACE Controller 0 epoch 1 received response {error_code=0} for a request sent to broker Temp-PhuongHPT.fsoft.fpt.vn:9092 (id: 0 rack: null) (state.change.logger)
+[2017-12-29 17:47:46,695] TRACE Controller 0 epoch 1 changed partition [log,0] state from NonExistentPartition to NewPartition with assigned replicas 0 (state.change.logger)
+[2017-12-29 17:47:46,732] TRACE Controller 0 epoch 1 changed state of replica 0 for partition [log,0] from NonExistentReplica to NewReplica (state.change.logger)
