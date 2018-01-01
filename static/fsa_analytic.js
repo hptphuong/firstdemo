@@ -5,6 +5,7 @@
     // update path directly
     // 29/12/2017   : Add ability to detect OS
     //test force update
+    //01/01/2018 - Auto update _fsa,_fsid when page is restarted(load fsa_analytic.js) or create new tracker
     var O = window,
         M = document,
         m_loccation = M.location;;
@@ -470,7 +471,10 @@
                 })
                 // document.cookie="_fsa=FSA1."+m_domain_arr.length+"."+tmp_ra+"; expires="+(new Date((new Date).getTime() + 63072000000)).toGMTString()+";path=/;"+"domain="+m_domain_arr.join(".");    
 
-        } else _fsa = getCookie('_fsa').split(".").slice(2).join(".");
+        } else {
+            document.cookie = '_fsa=' + getCookie('_fsa') + ";expires=" + (new Date((new Date).getTime() + 63072000000)).toGMTString();
+            _fsa = getCookie('_fsa').split(".").slice(2).join(".");
+        };
         if (!/_fsid=/.test(document.cookie)) {
             _fsid = ra();
 
@@ -481,7 +485,10 @@
                 domain: m_cookieDomain
             })
 
-        } else _fsid = getCookie('_fsid').split(".").slice(2).join(".");;
+        } else {
+            document.cookie = '_fsid=' + getCookie('_fsid') + ";expires=" + (new Date((new Date).getTime() + 86400000)).toGMTString();
+            _fsid = getCookie('_fsid').split(".").slice(2).join(".");
+        };
         tracker = new ee;
 
         // AĐ FIXED info for tracker
