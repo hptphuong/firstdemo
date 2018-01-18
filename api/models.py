@@ -42,6 +42,7 @@ class user_daily_report(Model):
 	bucket=columns.Integer(primary_key=True)
 	m_date= columns.BigInt(primary_key=True)
 	users=columns.Integer()
+
 class newuser_daily_report(Model):
     bucket=columns.Integer(primary_key=True)
     m_date= columns.BigInt(primary_key=True)
@@ -162,3 +163,93 @@ class draft_fsa_log_visit(Model):
     config_java =columns.Text()
     referal_xxx =columns.Text()
 
+class fsa_log_past_twodate(DjangoCassandraModel):
+    __options__ = {'default_time_to_live': 172800}
+    fsa=columns.Text(primary_key=True)
+    userid=columns.Text(primary_key=True)
+    fsid =columns.Text(primary_key=True)
+    m_date=columns.BigInt(primary_key=True,clustering_order="ASC")
+    idsite =columns.Text()
+    location_path=columns.Text()
+    location_ipv4=columns.Text()
+    location_ipv6 =columns.Text()
+    location_browser_lan=columns.Text()
+    location_country_code=columns.Text()
+    location_country_name=columns.Text()
+    location_browser_en=columns.Text()
+    location_city_name=columns.Text()
+    config_browser=columns.Text()
+    config_device=columns.Text()
+    config_browser_name=columns.Text()
+    config_browser_version=columns.Text()
+    config_resolution=columns.Text()
+    config_color_depth=columns.Text()
+    config_viewport_size=columns.Text()
+    config_java =columns.Text()
+    referal_xxx =columns.Text()
+    class Meta:
+        get_pk_field = 'fsa'
+class session_overview(DjangoCassandraModel):
+    fsa=columns.Text(primary_key=True)
+    m_date=columns.BigInt(primary_key=True)
+    duration = columns.BigInt(default=0)
+    nb_session =columns.Integer()
+    class Meta:
+        get_pk_field = 'fsa'
+
+
+    # This table will use to report session of user by (fsa,date)
+    # First design, it need fsa,m_date
+
+class test_fsa_log_visit(Model):
+    fsa=columns.Text(primary_key=True)
+    userid=columns.Text(primary_key=True)
+    fsid =columns.Text(primary_key=True)
+    m_date=columns.BigInt(primary_key=True)
+    idsite =columns.Text()
+    location_path=columns.Text()
+    location_ipv4=columns.Text()
+    location_ipv6 =columns.Text()
+    location_browser_lan=columns.Text()
+    location_country_code=columns.Text()
+    location_country_name=columns.Text()
+    location_browser_en=columns.Text()
+    location_city_name=columns.Text()
+    config_browser=columns.Text()
+    config_device=columns.Text()
+    config_browser_name=columns.Text()
+    config_browser_version=columns.Text()
+    config_resolution=columns.Text()
+    config_color_depth=columns.Text()
+    config_viewport_size=columns.Text()
+    location_os =columns.Text()
+    config_java =columns.Text()
+    referal_xxx =columns.Text()
+    
+class movie_pageview(DjangoCassandraModel):
+    m_date=columns.BigInt(primary_key=True)
+    movie=columns.Text(primary_key=True)
+    page_view=columns.Integer()
+    class Meta:
+        get_pk_field = 'm_date'
+class director_pageview(DjangoCassandraModel):
+    m_date=columns.BigInt(primary_key=True)
+    director=columns.Text(primary_key=True)
+    page_view=columns.Integer()
+    class Meta:
+        get_pk_field = 'm_date'
+class genre_pageview(DjangoCassandraModel):
+    m_date=columns.BigInt(primary_key=True)
+    genre=columns.Text(primary_key=True)
+    page_view=columns.Integer()
+    class Meta:
+        get_pk_field = 'm_date'
+
+class writer_pageview(DjangoCassandraModel):
+    m_date=columns.BigInt(primary_key=True)
+    writer=columns.Text(primary_key=True)
+    page_view=columns.Integer()
+    class Meta:
+        get_pk_field = 'm_date'
+
+# genre,writer

@@ -1,4 +1,9 @@
-{% extends "app/base_site.html" %} {% block content %}
+{% extends "app/base_site.html" %} {% block stylesheets %} {{ block.super }}
+<link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="/static/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="/static/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="/static/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet"> {% endblock stylesheets %} {% block content %}
 <div class="container body">
     <div class="right_col" role="main" style="min-height: 686px;">
         <div class="page-title">
@@ -35,11 +40,11 @@
                                             </li>
                                             <li><a href="#">Pageviews</a>
                                             </li>
-                                            <li><a href="#">Session</a>
-                                            </li>
-                                            <!-- <li class="divider"></li> -->
-                                            <li><a href="#">Session Duration</a>
-                                            </li>
+                                            <!--                                           <li><a href="#">Session</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#">Session Duration</a>
+                            </li> -->
                                         </ul>
                                     </div>
                                     VS
@@ -53,11 +58,11 @@
                                             </li>
                                             <li><a href="#">Pageviews</a>
                                             </li>
-                                            <li><a href="#">Session</a>
-                                            </li>
-                                            <!-- <li class="divider"></li> -->
-                                            <li><a href="#">Session Duration</a>
-                                            </li>
+                                            <!--                                         <li><a href="#">Session</a>
+            </li>
+            
+            <li><a href="#">Session Duration</a>
+        </li> -->
                                         </ul>
                                     </div>
                                 </div>
@@ -76,7 +81,6 @@
                                 <div id="chart_container">
                                     <canvas id="audiance_ov_lineChart" height="207" width="416" style="width: 379px; height: 189px;"></canvas>
                                 </div>
-                                
                                 <div class="tab-border-bottom"></div>
                             </div>
                             <!-- count -->
@@ -85,29 +89,37 @@
                                     <div>
                                         <div class="row tile_count pull-right">
                                             <div class="tile_stats_count"></div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-user"></i> Users</span>
                                                 <div id="count_user" class="count"></div>
                                             </div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-user"></i> New Users</span>
                                                 <div id="count_new_user" class="count"></div>
                                             </div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-eye"></i> Pageviews</span>
                                                 <div id="count_pageviews" class="count green"></div>
                                             </div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-user"></i>Session</span>
-                                                <div class="count">Available soon</div>
+                                                <div class="count" id="count_session"></div>
                                             </div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-user"></i>Avg. Session Duration</span>
-                                                <div class="count">Available soon</div>
+                                                <div class="count" id="count_avg_duration"></div>
                                             </div>
-                                            <div class="col-md-4 col-sm-6 col-xs-6 tile_stats_count">
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
                                                 <span class="count_top"><i class="fa fa-user"></i> Pages/Users</span>
                                                 <div class="count" id="count_pages_users"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Pages/Sessions</span>
+                                                <div class="count" id="count_pages_sessions"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Number of sessions per users</span>
+                                                <div class="count" id="count_nb_sessions_user"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -145,31 +157,290 @@
                                         <tr>
                                             <td>Screen Resolution</td>
                                         </tr>
-              <!--                           <tr>
-                                            <th>Mobile</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Operating System</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Service Provider</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Screen Resolution</td>
-                                        </tr> -->
-
+                                        <!--                           <tr>
+        <th>Mobile</th>
+    </tr>
+    <tr>
+        <td>Operating System</td>
+    </tr>
+    <tr>
+        <td>Service Provider</td>
+    </tr>
+    <tr>
+        <td>Screen Resolution</td>
+    </tr> -->
                                     </table>
                                 </div>
                                 <div id="audiance_ov_tbl_data" class="audiance_ov_explore">
                                 </div>
                             </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- - - - - - -   Table area -->
+                <!-- </div>
+<div class="x_footer"></div> -->
+            </div>
+            <!-- end x_content -->
+        </div>
+    </div>
+    <div class="right_col" role="main" style="min-height: 686px;">
+        <div class="x_panel" style="min-height: 686px;">
+            <!-- start x_content -->
+            <div class="x_title">
+                <h2>Movie Usage <small>Users</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <!-- <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Settings 1</a>
+                            </li>
+                            <li><a href="#">Settings 2</a>
+                            </li>
+                        </ul> -->
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div id="datatable-buttons_wrapper tbl_movie_pageview" class="dataTables_wrapper form-inline dt-bootstrap no-footer" style="width: 90%;">
+                            <p class="text-muted font-13 m-b-30">
+                                Movie vs Pageview
+                            </p>
+                            <table id="datatable-buttons" class="table table-striped table-bordered dataTable no-footer dtr-inline collapsed movie-pageview" role="grid" aria-describedby="datatable-buttons_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 80%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Movie</th>
+                                        <!--                                 <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 361.006px;" aria-label="Position: activate to sort column ascending">Pageview</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 177.006px; display: none;" aria-label="Office: activate to sort column ascending">Office</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 100.006px; display: none;" aria-label="Age: activate to sort column ascending">Age</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 175.006px; display: none;" aria-label="Start date: activate to sort column ascending">Start date</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 138px; display: none;" aria-label="Salary: activate to sort column ascending">Salary</th> -->
+                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 20%; display: none;" aria-label="Age: activate to sort column ascending">Pageviews</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--                             <tr role="row" class="odd">
+                                <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                <td>Accountant</td>
+                                <td style="display: none;">Tokyo</td>
+                                <td style="display: none;">33</td>
+                                <td style="display: none;">2008/11/28</td>
+                                <td style="display: none;">$162,700</td>
+                            </tr>
+                            <tr role="row" class="even">
+                                <td class="sorting_1" tabindex="0">Angelica Ramos</td>
+                                <td>Chief Executive Officer (CEO)</td>
+                                <td style="display: none;">London</td>
+                                <td style="display: none;">47</td>
+                                <td style="display: none;">2009/10/09</td>
+                                <td style="display: none;">$1,200,000</td>
+                            </tr> -->
+  <!--                                   <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                        <td style="display: none;">33</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                     <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                        <td style="display: none;">33</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div id="datatable-buttons_wrapper tbl_movie_pageview" class="dataTables_wrapper form-inline dt-bootstrap no-footer writer-pageview" style="width: 90%;">
+                            <p class="text-muted font-13 m-b-30">
+                                Writer vs Pageview
+                            </p>
+                            <table id="datatable-buttons" class="table table-striped table-bordered dataTable no-footer dtr-inline collapsed writer-pageview" role="grid" aria-describedby="datatable-buttons_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 80%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Writer</th>
+                                        <!--                                 <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 361.006px;" aria-label="Position: activate to sort column ascending">Pageview</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 177.006px; display: none;" aria-label="Office: activate to sort column ascending">Office</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 100.006px; display: none;" aria-label="Age: activate to sort column ascending">Age</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 175.006px; display: none;" aria-label="Start date: activate to sort column ascending">Start date</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 138px; display: none;" aria-label="Salary: activate to sort column ascending">Salary</th> -->
+                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 20%; display: none;" aria-label="Age: activate to sort column ascending">Pageviews</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--                             <tr role="row" class="odd">
+                                <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                <td>Accountant</td>
+                                <td style="display: none;">Tokyo</td>
+                                <td style="display: none;">33</td>
+                                <td style="display: none;">2008/11/28</td>
+                                <td style="display: none;">$162,700</td>
+                            </tr>
+                            <tr role="row" class="even">
+                                <td class="sorting_1" tabindex="0">Angelica Ramos</td>
+                                <td>Chief Executive Officer (CEO)</td>
+                                <td style="display: none;">London</td>
+                                <td style="display: none;">47</td>
+                                <td style="display: none;">2009/10/09</td>
+                                <td style="display: none;">$1,200,000</td>
+                            </tr> -->
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                        <td style="display: none;">33</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div id="datatable-buttons_wrapper tbl_movie_pageview" class="dataTables_wrapper form-inline dt-bootstrap no-footer" style="width: 90%;">
+                            <p class="text-muted font-13 m-b-30">
+                                Genre vs Pageview
+                            </p>
+                            <table id="datatable-buttons" class="table table-striped table-bordered dataTable no-footer dtr-inline collapsed genre-pageview" role="grid" aria-describedby="datatable-buttons_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 80%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Genre</th>
+                                        <!--                                 <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 361.006px;" aria-label="Position: activate to sort column ascending">Pageview</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 177.006px; display: none;" aria-label="Office: activate to sort column ascending">Office</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 100.006px; display: none;" aria-label="Age: activate to sort column ascending">Age</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 175.006px; display: none;" aria-label="Start date: activate to sort column ascending">Start date</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 138px; display: none;" aria-label="Salary: activate to sort column ascending">Salary</th> -->
+                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 20%; display: none;" aria-label="Age: activate to sort column ascending">Pageviews</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--                             <tr role="row" class="odd">
+                                <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                <td>Accountant</td>
+                                <td style="display: none;">Tokyo</td>
+                                <td style="display: none;">33</td>
+                                <td style="display: none;">2008/11/28</td>
+                                <td style="display: none;">$162,700</td>
+                            </tr>
+                            <tr role="row" class="even">
+                                <td class="sorting_1" tabindex="0">Angelica Ramos</td>
+                                <td>Chief Executive Officer (CEO)</td>
+                                <td style="display: none;">London</td>
+                                <td style="display: none;">47</td>
+                                <td style="display: none;">2009/10/09</td>
+                                <td style="display: none;">$1,200,000</td>
+                            </tr> -->
+        <!--                             <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                        <td style="display: none;">33</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div id="datatable-buttons_wrapper tbl_movie_pageview" class="dataTables_wrapper form-inline dt-bootstrap no-footer" style="width: 90%;">
+                            <p class="text-muted font-13 m-b-30">
+                                Director vs Pageview
+                            </p>
+                            <table id="datatable-buttons" class="table table-striped table-bordered dataTable no-footer dtr-inline collapsed director-pageview" role="grid" aria-describedby="datatable-buttons_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 80%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Director</th>
+                                        <!--                                 <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 361.006px;" aria-label="Position: activate to sort column ascending">Pageview</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 177.006px; display: none;" aria-label="Office: activate to sort column ascending">Office</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 100.006px; display: none;" aria-label="Age: activate to sort column ascending">Age</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 175.006px; display: none;" aria-label="Start date: activate to sort column ascending">Start date</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 138px; display: none;" aria-label="Salary: activate to sort column ascending">Salary</th> -->
+                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 20%; display: none;" aria-label="Age: activate to sort column ascending">Pageviews</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--                             <tr role="row" class="odd">
+                                <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                <td>Accountant</td>
+                                <td style="display: none;">Tokyo</td>
+                                <td style="display: none;">33</td>
+                                <td style="display: none;">2008/11/28</td>
+                                <td style="display: none;">$162,700</td>
+                            </tr>
+                            <tr role="row" class="even">
+                                <td class="sorting_1" tabindex="0">Angelica Ramos</td>
+                                <td>Chief Executive Officer (CEO)</td>
+                                <td style="display: none;">London</td>
+                                <td style="display: none;">47</td>
+                                <td style="display: none;">2009/10/09</td>
+                                <td style="display: none;">$1,200,000</td>
+                            </tr> -->
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Airi Satou</td>
+                                        <td style="display: none;">33</td>
+                                    </tr>
+                                    <tr role="row" class="odd">
+                                        <td tabindex="0" class="sorting_1">Biri Satou</td>
+                                        <td style="display: none;">35</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="x_footer"></div>
+            <!-- end x_content -->
         </div>
-        <!-- end x_content -->
     </div>
 </div>
 <!--             <div class="btn-group btn-group-sm pull-right">
@@ -180,4 +451,19 @@
 {% endblock content %} {% block javascripts %} {{ block.super }}
 <!-- Chart.js -->
 <script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
+<script src="/static/vendors/jszip/dist/jszip.min.js"></script>
+<script src="/static/vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="/static/vendors/pdfmake/build/vfs_fonts.js"></script>
+<script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 {% endblock javascripts %}

@@ -19,6 +19,11 @@ urlpatterns = [
     url(r'^report/city/$', views.cityReportList),
     url(r'^report/os_system/$', views.osReportList),
     url(r'^report/screen_system/$', views.systemScreenReportList),
+    url(r'^report/session_overview/$', views.sessionOverviewList),
+    url(r'^report/movie_pageview/$', views.moviePageviewList),
+    url(r'^report/director_pageview/$', views.directorPageviewList),
+    url(r'^report/writer_pageview/$', views.writerPageviewList),
+    url(r'^report/genre_pageview/$', views.genrePageviewList)
     # url(r'^user/(?P<id>[0-9a-zA-Z]+)/$', views.user_detail),
     # url(r'^collaborative-filtering/(?P<id>[0-9a-zA-Z]+)/$', views.getMovieFromCollaborativeFilteringByUserId),
     # url(r'^similarity/(?P<id>[0-9a-zA-Z]+)/$', views.getMovieFromSimilarityByMovieId),

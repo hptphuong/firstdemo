@@ -1,0 +1,192 @@
+{% extends "app/base_site.html" %} {% block content %}
+<div class="container body">
+    <div class="right_col" role="main" style="min-height: 686px;">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Audiance overview</h3>
+            </div>
+        </div>
+        <div class="x_panel" style="min-height: 686px;">
+            <!-- start x_content -->
+            <div class="x_content">
+                <div class="row">
+                    <div id="audiance_timerange_right" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; ">
+                        <div class="text-hover-underline">
+                            <span></span> <b class="caret"></b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <ul class="nav nav-tabs tab-border-bottom">
+                        <li class="active"><a data-toggle="tab" href="#audiance_overview_tab"><b>Overview</b> </a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class=""></div>
+                        <div id="audiance_overview_tab" class="tab-pane fade in active tab-size">
+                            <div class="row m-container-right_col">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="btn-group" id="dropdown-metric1">
+                                        <button data-toggle="dropdown" id="audiance_vs_metric1" class="btn btn-default dropdown-toggle" type="button" aria-expanded="false">Users<span class="caret"></span>
+                                        </button>
+                                        <ul role="menu" class="dropdown-menu">
+                                            <li><a href="#">Users</a>
+                                            </li>
+                                            <li><a href="#">New Users</a>
+                                            </li>
+                                            <li><a href="#">Pageviews</a>
+                                            </li>
+  <!--                                           <li><a href="#">Session</a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">Session Duration</a>
+                                            </li> -->
+                                        </ul>
+                                    </div>
+                                    VS
+                                    <div class="btn-group" id="dropdown-metric2">
+                                        <button data-toggle="dropdown" id="audiance_vs_metric2" class="btn btn-default dropdown-toggle" type="button" aria-expanded="false"> <span class="caret"></span>
+                                        </button>
+                                        <ul role="menu" class="dropdown-menu">
+                                            <li><a href="#">Users</a>
+                                            </li>
+                                            <li><a href="#">New Users</a>
+                                            </li>
+                                            <li><a href="#">Pageviews</a>
+                                            </li>
+    <!--                                         <li><a href="#">Session</a>
+                                            </li>
+                                            
+                                            <li><a href="#">Session Duration</a>
+                                            </li> -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
+                                    <div class="pull-right">
+                                        <div class="btn-group  btn-group-sm" id="btn-group-time-dimension">
+                                            <button class="btn btn-default" type="button" style="display: none;">Hourly</button>
+                                            <button class="btn btn-default btn-primary" type="button">Day</button>
+                                            <button class="btn btn-default" type="button">Week</button>
+                                            <button class="btn btn-default" type="button">Month</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-container-right_col">
+                                <div id="chart_container">
+                                    <canvas id="audiance_ov_lineChart" height="207" width="416" style="width: 379px; height: 189px;"></canvas>
+                                </div>
+                                
+                                <div class="tab-border-bottom"></div>
+                            </div>
+                            <!-- count -->
+                            <div class="row m-container-right_col ">
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                    <div>
+                                        <div class="row tile_count pull-right">
+                                            <div class="tile_stats_count"></div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Users</span>
+                                                <div id="count_user" class="count"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> New Users</span>
+                                                <div id="count_new_user" class="count"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-eye"></i> Pageviews</span>
+                                                <div id="count_pageviews" class="count green"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i>Session</span>
+                                                <div class="count" id ="count_session"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i>Avg. Session Duration</span>
+                                                <div class="count" id="count_avg_duration"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Pages/Users</span>
+                                                <div class="count" id="count_pages_users"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Pages/Sessions</span>
+                                                <div class="count" id="count_pages_sessions"></div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6 col-xs-6 tile_stats_count">
+                                                <span class="count_top"><i class="fa fa-user"></i> Number of sessions per users</span>
+                                                <div class="count" id="count_nb_sessions_user"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+                                    <canvas id="pieChart_newuser_returnuser"></canvas>
+                                </div>
+                                <div class="tab-border-bottom"></div>
+                            </div>
+                            <!-- end count -->
+                            <div class="row m-container-right_col">
+                                <div class="audiance_ov_table">
+                                    <table id="audiance_ov_cat_table" class="_GAfe ">
+                                        <tr>
+                                            <th>Demographics</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Language</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Country</td>
+                                        </tr>
+                                        <tr>
+                                            <td>City</td>
+                                        </tr>
+                                        <tr>
+                                            <th>System</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Browser</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Operating System</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Screen Resolution</td>
+                                        </tr>
+              <!--                           <tr>
+                                            <th>Mobile</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Operating System</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Service Provider</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Screen Resolution</td>
+                                        </tr> -->
+
+                                    </table>
+                                </div>
+                                <div id="audiance_ov_tbl_data" class="audiance_ov_explore">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="x_footer"></div>
+        </div>
+        <!-- end x_content -->
+    </div>
+    
+</div>
+<!--             <div class="btn-group btn-group-sm pull-right">
+<a href="" ng-click="sort('-createdAt')" class="btn btn-default" ng-class="{'active':sortBy == '-createdAt'}">Newest</a>
+<a href="" ng-click="sort('-votes')" class="btn btn-default" ng-class="{'active':sortBy == '-votes'}">Most Liked</a>
+<a href="" ng-click="sort('-views')" class="btn btn-default" ng-class="{'active':sortBy == '-views'}">Most Viewed</a>
+</div> -->
+{% endblock content %} {% block javascripts %} {{ block.super }}
+<!-- Chart.js -->
+<script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
+{% endblock javascripts %}

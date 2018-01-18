@@ -2640,11 +2640,18 @@ function update_count() {
             url: "api/report/pageviews/",
             data: data,
             contentType: 'application/json'
+        }),
+        m_session_overview = $.ajax({
+            type: "POST",
+            url: "api/report/session_overview/",
+            data: data,
+            contentType: 'application/json'
         });
-    $.when(m_user, m_new_user, m_pageview).done(function(r1, r2, r3) {
+    $.when(m_user, m_new_user, m_pageview, m_session_overview).done(function(r1, r2, r3, r4) {
         r1 = JSON.parse(r1[0]);
         r2 = JSON.parse(r2[0]);
         r3 = JSON.parse(r3[0]);
+        // r4 = JSON.parse(r4[0]);
         sum_user = r1['value1'].reduce((a, b) => a + b, 0);
         sum_new_user = r2['value1'].reduce((a, b) => a + b, 0);
         var sum_pageviews = 0;
@@ -2656,6 +2663,12 @@ function update_count() {
             // if (Array.isArray) {
             //     sum_pageviews += tmp.reduce((a, b) => a + b, 0);
             // } else sum_pageviews += tmp[1];
+        };
+        var sum_session = 0,
+            sum_duration = 0;
+        for (id in r4[0]) {
+            sum_session += r4[0][id]['nb_session'];
+            sum_duration += r4[0][id]['duration'];
         };
 
         // for (var mi = 0; mi < m_position_in_labels.length; mi++) {
@@ -2669,6 +2682,11 @@ function update_count() {
         document.getElementById("count_new_user").innerHTML = sum_new_user;
         document.getElementById("count_pageviews").innerHTML = sum_pageviews;
         document.getElementById("count_pages_users").innerHTML = Math.round(sum_pageviews / sum_user);
+        document.getElementById("count_session").innerHTML = sum_session;
+        document.getElementById("count_avg_duration").innerHTML = Math.round(sum_duration / sum_session);
+        document.getElementById("count_pages_sessions").innerHTML = Math.round(sum_pageviews / sum_session, 2);
+        document.getElementById("count_nb_sessions_user").innerHTML = ((sum_session / sum_user) % 1).toFixed(3);
+        console.log("duration:" + String(sum_duration) + ",sum_session:" + String(sum_session));
         sum_returning_user = sum_user - sum_new_user;
 
         if (sum_new_user != prev_new_user) {
@@ -2722,6 +2740,7 @@ function init_audiance_timerange_right() {
             timerange = [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')];
         audiance_overview_plot_two_metric(timerange);
         update_count();
+        init_audiance_overview_movie_usage();
 
 
         //  
@@ -2777,6 +2796,110 @@ function init_audiance_timerange_right() {
     cb(moment().subtract(6, 'days'), moment());
 
 }
+
+function init_audiance_overview_movie_usage() {
+    var timerange = $('#audiance_timerange_right')[0].textContent.trim().split("-");
+    timerange[0] = moment(timerange[0], "MMM DD,YYYY").format("YYYY-MM-DD");
+    timerange[1] = moment(timerange[1], "MMM DD,YYYY").format("YYYY-MM-DD");
+    var data = JSON.stringify({
+        x1_start: [timerange[0]],
+        x1_end: [timerange[1]]
+    });
+
+    var m_movie_pageview = $.ajax({
+            type: "POST",
+            url: "api/report/movie_pageview/",
+            data: data,
+            contentType: 'application/json'
+        }),
+        m_director_pageview = $.ajax({
+            type: "POST",
+            url: "/api/report/director_pageview/",
+            data: data,
+            contentType: 'application/json'
+        }),
+        m_writer_pageview = $.ajax({
+            type: "POST",
+            url: "api/report/writer_pageview/",
+            data: data,
+            contentType: 'application/json'
+        }),
+        m_genre_pageview = $.ajax({
+            type: "POST",
+            url: "api/report/genre_pageview/",
+            data: data,
+            contentType: 'application/json'
+        });
+    $.when(m_movie_pageview, m_director_pageview, m_writer_pageview, m_genre_pageview).done(function(r1, r2, r3, r4) {
+        // listMoviePageview = r1[0];
+        init_movie_usage_tbl_movie(r1[0]);
+        init_movie_usage_tbl_director(r2[0]);
+        init_movie_usage_tbl_writer(r3[0]);
+        init_movie_usage_tbl_genre(r4[0]);
+        // $("table#datatable-buttons").DataTable().reset();
+        // init_DataTables();
+
+
+        // r2 = JSON.parse(r2[0]);
+        // r3 = JSON.parse(r3[0]);
+    });
+}
+
+function init_movie_usage_tbl_genre(listJsonMoive) {
+    window["dtable_genre_pageview"].clear();
+
+    for (index in listJsonMoive) {
+        var item = listJsonMoive[index];
+
+        window["dtable_genre_pageview"].row.add([item.genre, item.page_view]);
+
+    }
+    window["dtable_genre_pageview"].draw();
+
+
+};
+
+function init_movie_usage_tbl_writer(listJsonMoive) {
+    window["dtable_writer_pageview"].clear();
+
+    for (index in listJsonMoive) {
+        var item = listJsonMoive[index];
+
+        window["dtable_writer_pageview"].row.add([item.writer, item.page_view]);
+
+    }
+    window["dtable_writer_pageview"].draw();
+
+
+};
+
+function init_movie_usage_tbl_director(listJsonMoive) {
+    window["dtable_director_pageview"].clear();
+
+    for (index in listJsonMoive) {
+        var item = listJsonMoive[index];
+
+        window["dtable_director_pageview"].row.add([item.director, item.page_view]);
+
+    }
+    window["dtable_director_pageview"].draw();
+
+
+};
+
+function init_movie_usage_tbl_movie(listJsonMoive) {
+    window["dtable_movie_pageview"].clear();
+
+    for (index in listJsonMoive) {
+        var item = listJsonMoive[index];
+
+        window["dtable_movie_pageview"].row.add([item.movie, item.page_view]);
+
+    }
+    window["dtable_movie_pageview"].draw();
+
+
+};
 
 function init_realtime_audiance_overview() {
     setInterval(function() {
@@ -3851,28 +3974,48 @@ function init_DataTables() {
     console.log('init_DataTables');
 
     var handleDataTableButtons = function() {
-        if ($("#datatable-buttons").length) {
-            $("#datatable-buttons").DataTable({
-                dom: "Bfrtip",
-                buttons: [{
-                    extend: "copy",
-                    className: "btn-sm"
-                }, {
-                    extend: "csv",
-                    className: "btn-sm"
-                }, {
-                    extend: "excel",
-                    className: "btn-sm"
-                }, {
-                    extend: "pdfHtml5",
-                    className: "btn-sm"
-                }, {
-                    extend: "print",
-                    className: "btn-sm"
-                }, ],
-                responsive: true
-            });
-        }
+        var data_table_setting = {
+            dom: "Bfrtip",
+            "pageLength": 5,
+            buttons: [{
+                extend: "copy",
+                className: "btn-sm",
+
+            }, {
+                extend: "csv",
+                className: "btn-sm",
+                filename: function() {
+                    var d = new Date();
+                    var n = d.getTime();
+                    return 'myfile' + n;
+                }
+            }, {
+                extend: "excel",
+                className: "btn-sm"
+            }, {
+                extend: "pdfHtml5",
+                className: "btn-sm",
+                sTitle: "HealthForms"
+            }, {
+                extend: "print",
+                className: "btn-sm"
+            }, ],
+            responsive: true
+        };
+
+        if ($("table.movie-pageview").length) {
+            window["dtable_movie_pageview"] = $("table.movie-pageview").DataTable(data_table_setting);
+        };
+        if ($("table.writer-pageview").length) {
+            window["dtable_writer_pageview"] = $("table.writer-pageview").DataTable(data_table_setting);
+        };
+
+        if ($("table.genre-pageview").length) {
+            window["dtable_genre_pageview"] = $("table.genre-pageview").DataTable(data_table_setting);
+        };
+        if ($("table.director-pageview").length) {
+            window["dtable_director_pageview"] = $("table.director-pageview").DataTable(data_table_setting);
+        };
     };
 
     TableManageButtons = function() {
@@ -3885,6 +4028,7 @@ function init_DataTables() {
     }();
 
     $('#datatable').dataTable();
+    $('#datatable2').dataTable();
 
     $('#datatable-keytable').DataTable({
         keys: true
@@ -6860,7 +7004,7 @@ function init_index_device() {
                 }
 
 
-                var backgroundColor_array = ["#BDC3C7", "#9B59B6", "#E74C3C", "#26B99A", "#3498DB"];
+                var backgroundColor_array = ["#3498DB", "#1ABB9C", "#9B59B6", "#9CC2CB", "#E74C3C"];
 
 
                 // tbl_visitor_list.replaceChild(tbody, tbl_visitor_list.firstElementChild);
@@ -6881,10 +7025,10 @@ function init_index_device() {
                                 backgroundColor: backgroundColor_array,
                                 hoverBackgroundColor: [
                                     "#CFD4D8",
-                                    "#B370CF",
-                                    "#E95E4F",
-                                    "#36CAAB",
-                                    "#49A9EA"
+                                    "#CFD4D8",
+                                    "#CFD4D8",
+                                    "#CFD4D8",
+                                    "#CFD4D8"
                                 ]
                             }]
                         },
@@ -7071,12 +7215,22 @@ $(document).ready(function() {
     if (/^\/$|^\/index.html$/.test(location.pathname)) {
         init_daterangepicker();
         init_daterangepicker_right();
+        // // new implementation
+
+
+        init_index_visitors_location();
+
+        init_index_device();
+        init_index_browsers_usage();
+
+
     }
     if (/^\/audiance_overview.html$/.test(location.pathname)) {
         init_audiance_timerange_right();
         init_audiance_btn_time_dimension();
         init_audiance_dropdown_metric();
-        init_realtime_audiance_overview();
+        init_new_test_audiance_overivew();
+        // init_realtime_audiance_overview();
 
     }
 
@@ -7100,15 +7254,7 @@ $(document).ready(function() {
     init_CustomNotification();
     init_autosize();
     init_autocomplete();
-    // // new implementation
 
-
-    init_index_visitors_location();
-
-    init_index_device();
-    init_index_browsers_usage();
-
-    init_new_test_audiance_overivew();
 
     // $('#reportrange_right.pull-right').click();
     // $('div.daterangepicker.dropdown-menu.ltr.opensright>.ranges>ul>li')[0].click()

@@ -472,7 +472,13 @@
                 // document.cookie="_fsa=FSA1."+m_domain_arr.length+"."+tmp_ra+"; expires="+(new Date((new Date).getTime() + 63072000000)).toGMTString()+";path=/;"+"domain="+m_domain_arr.join(".");    
 
         } else {
-            document.cookie = '_fsa=' + getCookie('_fsa') + ";expires=" + (new Date((new Date).getTime() + 63072000000)).toGMTString();
+            setCookie({
+                    name: "_fsa",
+                    value: getCookie('_fsa'),
+                    expires: (new Date((new Date).getTime() + 63072000000)).toGMTString(),
+                    domain: m_cookieDomain
+                })
+                // document.cookie = '_fsa=' + getCookie('_fsa') + ";expires=" + (new Date((new Date).getTime() + 63072000000)).toGMTString();
             _fsa = getCookie('_fsa').split(".").slice(2).join(".");
         };
         if (!/_fsid=/.test(document.cookie)) {
@@ -486,7 +492,13 @@
             })
 
         } else {
-            document.cookie = '_fsid=' + getCookie('_fsid') + ";expires=" + (new Date((new Date).getTime() + 86400000)).toGMTString();
+            // document.cookie = '_fsid=' + getCookie('_fsid') + ";expires=" + (new Date((new Date).getTime() + 86400000)).toGMTString();
+            setCookie({
+                name: "_fsid",
+                value: getCookie('_fsid'),
+                expires: (new Date((new Date).getTime() + 86400000)).toGMTString(),
+                domain: m_cookieDomain
+            })
             _fsid = getCookie('_fsid').split(".").slice(2).join(".");
         };
         tracker = new ee;
@@ -637,7 +649,7 @@
         a.get("userId") && (tailUrl = tailUrl + "&uid=" + a.get("userId"));
 
         // fsaCore.requestImage('http://127.0.0.1:8000/a.gif?', tailUrl);
-        fsaCore.requestImage('http://10.88.113.111:8000/a.gif?', tailUrl);
+        fsaCore.requestImage('http://10.88.113.22:8000/a.gif?', tailUrl);
     };
     // create send function for fsa
     fsaCore.create('send', function(a) {

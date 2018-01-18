@@ -1,8 +1,8 @@
-REM Start zookeper first
+REM stop zookeper first
 
-start /b .\bin\windows\zookeeper-server-stop.bat .\config\zookeeper.properties > zookeeper-server-stop.log 2> zookeeper-server-stop.err &
+REM start /b .\bin\windows\zookeeper-server-stop.bat .\config\zookeeper.properties > zookeeper-server-stop.log 2> zookeeper-server-stop.err &
 
-sleep 5
+REM sleep 5
 
 start /b .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties > zookeeper-server-start.log 2> zookeeper-server-start.err &
 

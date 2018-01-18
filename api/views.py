@@ -12,12 +12,23 @@ from api.models import (
     browser_language_report,
     city_report,
     os_report,
-    system_screen_report
+    system_screen_report,
+    session_overview,
+    movie_pageview,
+    director_pageview,
+    writer_pageview,
+    genre_pageview
+
 )
 from api.serializers import (
 	FsaSiteModelSerializer,
 	FsaUserSerializer,
-	UserDailySerializer
+	UserDailySerializer,
+	SessionOverviewSerializer,
+	MoviePageviewSerializer,
+	DirectorPageviewSerializer,
+	WriterPageviewSerializer,
+	GenrePageviewSerializer
 )
 
 from django.http import HttpResponse, JsonResponse
@@ -54,10 +65,10 @@ def fsaSiteList(request):
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
-    	logger.warn("parse data>>>>>>>>>>>>>>>>>>>")
+    	# logger.warn("parse data>>>>>>>>>>>>>>>>>>>")
     	data = JSONParser().parse(request)
-    	logger.warn("passed >>>>>>>>>>>>>>>>>>>")
-    	logger.warn("data:"+data['idsite'])
+    	# logger.warn("passed >>>>>>>>>>>>>>>>>>>")
+    	# logger.warn("data:"+data['idsite'])
     	serializer = FsaSiteModelSerializer(data=data)
     	if serializer.is_valid():
     		serializer.save()
@@ -72,9 +83,9 @@ def fsaUserList(request):
 		return JsonResponse(serializer.data, safe=False)
 
 	elif request.method == 'POST':
-		logger.warn("parse data>>>>>>>>>>>>>>>>>>>")
+		# logger.warn("parse data>>>>>>>>>>>>>>>>>>>")
 		data = JSONParser().parse(request)
-		logger.warn("passed >>>>>>>>>>>>>>>>>>>")
+		# logger.warn("passed >>>>>>>>>>>>>>>>>>>")
 		# logger.warn("data:"+data)
 		serializer = FsaUserSerializer(data=data)
 		if serializer.is_valid():
@@ -84,8 +95,8 @@ def fsaUserList(request):
 
 @csrf_exempt
 def userDailyList(request):
-	logger.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	logger.warn(">>>>>>>>>>>> userDailyList<<<<<<<<<")
+	# logger.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	# logger.warn(">>>>>>>>>>>> userDailyList<<<<<<<<<")
 	if request.method == 'GET':
 		api = user_daily.objects.all()
 		serializer = UserDailySerializer(api, many=True)
@@ -129,7 +140,7 @@ def userDailyList(request):
 def userDailyReportList(request):
 
 	if request.method == 'POST':
-		logger.warn(">>>>>>> Post for userDailyReportList >>>>>")
+		# logger.warn(">>>>>>> Post for userDailyReportList >>>>>")
 		data = JSONParser().parse(request)
 
 		utczone = tz.gettz('UTC')
@@ -177,7 +188,7 @@ def userDailyReportList(request):
 @csrf_exempt
 def newuserDailyReportList(request):
 	if request.method == 'POST':
-		logger.warn(">>>> Post for newuserDailyReportList")
+		# logger.warn(">>>> Post for newuserDailyReportList")
 		data = JSONParser().parse(request)
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
@@ -187,13 +198,13 @@ def newuserDailyReportList(request):
 
 		m_response={}
 		# first range
-		print("x1_start>>>>>>>>>>>>:"+str(x1_start))
-		print("x1_end>>>>>>>>>>>>:"+str(x1_end))
-		print("x2_start>>>>>>>>>>>>:"+str(x2_start))
-		print("x2_end>>>>>>>>>>>>:"+str(x2_end))
+		# print("x1_start>>>>>>>>>>>>:"+str(x1_start))
+		# print("x1_end>>>>>>>>>>>>:"+str(x1_end))
+		# print("x2_start>>>>>>>>>>>>:"+str(x2_start))
+		# print("x2_end>>>>>>>>>>>>:"+str(x2_end))
 
 		if(x1_start & x1_end):
-			logger.warn(">>>> x1_start & x1_end")
+			# logger.warn(">>>> x1_start & x1_end")
 			m_response['date1']=[]
 			m_response['value1']=[]
 			query_rslt = (
@@ -211,7 +222,7 @@ def newuserDailyReportList(request):
 		# second range
 
 		if(x2_start & x2_end):
-			logger.warn(">>>> x2_start & x2_end")
+			# logger.warn(">>>> x2_start & x2_end")
 			m_response['date2']=[]
 			m_response['value2']=[]
 			query_rslt = (
@@ -233,7 +244,7 @@ def newuserDailyReportList(request):
 @csrf_exempt
 def locationReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		# logger.warn(">>>>>>>>>>>>> GET request for location:")
 		m_response={}
 		query_rslt_all=(
 			location_report
@@ -250,7 +261,7 @@ def locationReportList(request):
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -271,7 +282,7 @@ def locationReportList(request):
 @csrf_exempt
 def deviceReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for device:")
+		# logger.warn(">>>>>>>>>>>>> GET request for device:")
 		m_response={}
 		m_response['header']=['m_date','config_device','count']
 		m_response['value']=[]
@@ -289,7 +300,7 @@ def deviceReportList(request):
 @csrf_exempt
 def browsersReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for browsers:")
+		# logger.warn(">>>>>>>>>>>>> GET request for browsers:")
 		m_response={}
 		m_response['header']=['bucket','m_date','browser','count']
 		m_response['value']=[]
@@ -307,7 +318,7 @@ def browsersReportList(request):
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -332,18 +343,18 @@ def browsersReportList(request):
 @csrf_exempt
 def pageviewsReportList(request):
 	if request.method == 'POST':
-		logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList:")
+		# logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList:")
 		data = JSONParser().parse(request)
 		
-		logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> GET request for pageviewsReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
 		m_response={}
 		# first range
-		logger.warn(">>>>>>>>>>>>> data['x1_start']:"+str(x1_start))
+		# logger.warn(">>>>>>>>>>>>> data['x1_start']:"+str(x1_start))
 		if(x1_start & x1_end):
-			logger.warn(">>>> x1_start & x1_end")
+			# logger.warn(">>>> x1_start & x1_end")
 			m_response['date1']=[]
 			m_response['value1']=[]
 			query_rslt = (
@@ -362,7 +373,7 @@ def pageviewsReportList(request):
 @csrf_exempt
 def browsersLanReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for browsersLanReportList:")
+		# logger.warn(">>>>>>>>>>>>> GET request for browsersLanReportList:")
 		m_response={}
 		m_response['header']=['m_date','browser','count']
 		m_response['value']=[]
@@ -379,7 +390,7 @@ def browsersLanReportList(request):
 
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -403,7 +414,7 @@ def browsersLanReportList(request):
 @csrf_exempt
 def cityReportList(request):
 	if request.method == 'GET':
-		logger.warn(">>>>>>>>>>>>> GET request for location:")
+		# logger.warn(">>>>>>>>>>>>> GET request for location:")
 		m_response={}
 		query_rslt_all=(
 			city_report
@@ -420,7 +431,7 @@ def cityReportList(request):
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for cityReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for cityReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -444,7 +455,7 @@ def cityReportList(request):
 def osReportList(request):
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -469,7 +480,7 @@ def osReportList(request):
 def systemScreenReportList(request):
 	if request.method == 'POST':
 		data = JSONParser().parse(request)		
-		logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
+		# logger.warn(">>>>>>>>>>>>> POSTS request for browsersLanReportList parsed")
 		utczone = tz.gettz('UTC')
 		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
 		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
@@ -489,3 +500,131 @@ def systemScreenReportList(request):
 				])
 		return JsonResponse(json.dumps(m_response), status=201, safe=False)
 	return JsonResponse('not support', status=400)
+
+@csrf_exempt
+def sessionOverviewList(request):
+	if request.method == 'POST':
+		# logger.warn("sessionOverviewList>>>>>>>>")
+
+		data = JSONParser().parse(request)
+		# logger.warn(data)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		# logger.warn("x1_start:"+str(x1_start))
+		# logger.warn("x1_end:"+str(x1_end))
+		api = (session_overview
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.allow_filtering()
+			)
+		# api = session_overview.objects.get(m_date >=x1_start)
+		# logger.warn(api)
+		# logger.warn(api)
+		serializer = SessionOverviewSerializer(api, many=True)
+		return JsonResponse(serializer.data, safe=False)
+
+@csrf_exempt
+def moviePageviewList(request):
+	if request.method == 'POST':
+		logger.warn(">>>>>>>>> new>>>>>>moviePageviewList>>>>>>>>")
+		data = JSONParser().parse(request)
+		logger.warn(data)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		logger.warn("x1_start:"+str(x1_start))
+		logger.warn("x1_end:"+str(x1_end))
+		api = (movie_pageview
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.limit(None)
+					.allow_filtering()
+
+			)
+		logger.warn(">>>>>>>>>>>>hptphuong done")
+		# api = session_overview.objects.get(m_date >=x1_start)
+		logger.warn(api)
+		# logger.warn(api)
+	
+		serializer = MoviePageviewSerializer(api, many=True)
+		return JsonResponse(serializer.data, safe=False)
+
+@csrf_exempt
+def directorPageviewList(request):
+	if request.method == 'POST':
+		logger.warn(">>>>>>>>> new>>>>>>moviePageviewList>>>>>>>>")
+		data = JSONParser().parse(request)
+		logger.warn(data)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		logger.warn("x1_start:"+str(x1_start))
+		logger.warn("x1_end:"+str(x1_end))
+		api = (director_pageview
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.limit(None)
+					.allow_filtering()
+
+			)
+		logger.warn(">>>>>>>>>>>>hptphuong done")
+		# api = session_overview.objects.get(m_date >=x1_start)
+		logger.warn(api)
+		# logger.warn(api)
+	
+		serializer = DirectorPageviewSerializer(api, many=True)
+		return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+def writerPageviewList(request):
+	if request.method == 'POST':
+		logger.warn(">>>>>>>>> new>>>>>>moviePageviewList>>>>>>>>")
+		data = JSONParser().parse(request)
+		logger.warn(data)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		logger.warn("x1_start:"+str(x1_start))
+		logger.warn("x1_end:"+str(x1_end))
+		api = (writer_pageview
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.limit(None)
+					.allow_filtering()
+
+			)
+		logger.warn(">>>>>>>>>>>>hptphuong done")
+		# api = session_overview.objects.get(m_date >=x1_start)
+		logger.warn(api)
+		# logger.warn(api)
+	
+		serializer = WriterPageviewSerializer(api, many=True)
+		return JsonResponse(serializer.data, safe=False)
+@csrf_exempt
+def genrePageviewList(request):
+	if request.method == 'POST':
+		logger.warn(">>>>>>>>> new>>>>>>moviePageviewList>>>>>>>>")
+		data = JSONParser().parse(request)
+		logger.warn(data)
+		utczone = tz.gettz('UTC')
+		x1_start=int(datetime.strptime(data['x1_start'][0],'%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_start' in data ) else 0
+		x1_end = int(datetime.strptime(data['x1_end'][0], '%Y-%m-%d').replace(tzinfo=utczone).timestamp()) if ('x1_end' in data ) else 0
+		logger.warn("x1_start:"+str(x1_start))
+		logger.warn("x1_end:"+str(x1_end))
+		api = (genre_pageview
+					.objects.filter(m_date__gte=x1_start)
+					.filter(m_date__lte=x1_end)
+					.limit(None)
+					.allow_filtering()
+
+			)
+		logger.warn(">>>>>>>>>>>>hptphuong done")
+		# api = session_overview.objects.get(m_date >=x1_start)
+		logger.warn(api)
+		# logger.warn(api)
+	
+	
+		serializer = GenrePageviewSerializer(api, many=True)
+		return JsonResponse(serializer.data, safe=False)
