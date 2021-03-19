@@ -10,7 +10,7 @@ django-analytical==2.2.2
 django-cassandra-engine==1.2.2
 django-extensions==1.9.7
 django-filter==1.1.0
-djangorestframework==3.3.3
+djangorestframework==3.11.2
 geoip2==2.5.0
 gunicorn==19.7.1
 idna==2.6
